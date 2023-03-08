@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "ethereum-input-data-decoder": "^0.4.2",
     "ethers": "^5.7.2",
+    "g": "^2.0.1",
     "git-filter-repo": "^0.0.30",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
