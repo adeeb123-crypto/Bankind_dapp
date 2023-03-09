@@ -13,6 +13,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 // import ReserveHeader from "./components/ReserveHeader";
 import BankReserve from "./components/BankReserve";
 import Banking from './components/Banking';
+import Forex from './components/Forex';
+import Borrow from './components/Borrow';
 import './App.css';
 const ethers = require('ethers');
 var Web3 = require('web3');
@@ -44,6 +46,8 @@ function App() {
          <Route path = '/branch' element ={<Branch />}/>
          <Route path = '/bankreserve' element ={<BankReserve />}/>
          <Route path = '/banking' element ={<Banking />}/>
+         <Route path = '/forex' element ={<Forex />}/>
+         <Route path = '/borrow' element ={<Borrow />}/>
        </Routes>
        </BrowserRouter>
    

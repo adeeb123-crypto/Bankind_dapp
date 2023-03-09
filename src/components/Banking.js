@@ -1,3 +1,4 @@
+//Need to fix the amount in the card
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -15,7 +16,7 @@ import {
   Table,
   Grid,
   List,
-  Container
+  Container,
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -39,9 +40,9 @@ function Banking() {
   const [arrayDataloanDet, setArrayDataLoanDet] = useState([]);
   const [isconnected, setIsConnected] = useState(false);
   const [isExit, setIsExit] = useState(false);
+  const [clientName, setClientName] = useState("");
 
   useEffect(() => {
-
     // someForexDets()
 
     let temp_dataF = window.localStorage.getItem("DataF");
@@ -67,11 +68,7 @@ function Banking() {
       temp_dataLoan_Det = JSON.parse(temp_dataLoan_Det);
       setArrayDataLoanDet(temp_dataLoan_Det);
     }
-
-
-
   }, [arrayDataF, arrayDataBr, arrayDataloan]);
-
 
   async function someForexDets() {
     try {
@@ -134,7 +131,6 @@ function Banking() {
           console.log(tmp_data);
           setArrayDataF(tmp_data);
           window.localStorage.setItem("DataF", JSON.stringify(tmp_data));
-
         } else {
           setTokenSymbol("USD");
 
@@ -155,15 +151,11 @@ function Banking() {
           console.log(tmp_data);
           setArrayDataF(tmp_data);
           window.localStorage.setItem("DataF", JSON.stringify(tmp_data));
-
         }
       }
     } catch (error) {
       console.log(Error);
     }
-
-
-
   }
 
   async function forex() {
@@ -491,7 +483,6 @@ function Banking() {
             .branches(IDByAddress.bankId, IDByAddress.branchId)
             .call();
 
-
           let borrowDetails = await callContract.methods
             .borrowDetails(branchAddress.branch)
             .call();
@@ -522,7 +513,7 @@ function Banking() {
             )
             .send({ from: address, gas: 1000000 });
 
-            let positionDetails1 = await callContract.methods
+          let positionDetails1 = await callContract.methods
             .positionDetails(borrowDetails.byClient, borrowDetails.positionId)
             .call();
 
@@ -582,11 +573,9 @@ function Banking() {
             )
             .send({ from: address, gas: 1000000 });
 
-
-            let positionDetails1 = await callContract.methods
+          let positionDetails1 = await callContract.methods
             .positionDetails(borrowDetails.byClient, borrowDetails.positionId)
             .call();
-
 
           let tmp_data_br = arrayDataBr;
           tmp_data_br.push(positionDetails1);
@@ -607,12 +596,12 @@ function Banking() {
     } catch (error) {
       console.log(Error);
     }
-    setIsExit(true)
+    setIsExit(true);
   }
 
   async function giveDetails() {
     try {
-      setIsConnected(true)
+      setIsConnected(true);
       if (
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
@@ -654,6 +643,7 @@ function Banking() {
 
         if (IDByAddress.bankId == 0) {
           setTokenSymbol("EUR");
+          setClientName("Europe Client")
 
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
@@ -676,6 +666,8 @@ function Banking() {
             )
             .call();
 
+            console.log("positionDetails",positionDetails);
+
           let tmp_data = arrayDataloanDet;
           tmp_data.push(positionDetails);
           console.log(tmp_data);
@@ -686,6 +678,7 @@ function Banking() {
           console.log("arrayDataloan:", arrayDataloan[0].bank);
         } else {
           setTokenSymbol("USD");
+          setClientName("USD Client")
 
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
@@ -750,14 +743,11 @@ function Banking() {
               ui={false}
             />
             <Card.Content>
-              <Card.Header>Afzal</Card.Header>
+              <Card.Header>{clientName}</Card.Header>
 
               <Card.Meta>
                 <span className="date">client ID: {0}</span>
               </Card.Meta>
-              <Card.Description>
-                Afzal is a client of Bank of New York.
-              </Card.Description>
             </Card.Content>
             <Card.Content extra>
               <a>
@@ -832,27 +822,20 @@ function Banking() {
                 console.log(data[index]);
                 return (
                   <Table.Row key={index}>
-
                     <Table.Cell>{data.toClient}</Table.Cell>
                     <Table.Cell>{data.amountInUsd / 10e7} USD</Table.Cell>
                     <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
                     <Table.Cell>{data.reqId}</Table.Cell>
                     <Table.Cell>
-                      {data.isDepositedToBranch ? "True" : "False"}
+                      {data.isDepositedToBranch ?  <Icon color="green" name="checkmark" size="large" /> :  <Icon color="red" name="close" size="large" />}
                     </Table.Cell>
-                    <Table.Cell>{data.isDone ? "True" : "False"}</Table.Cell>
-
+                    <Table.Cell>{data.isDone ? <Icon color="green" name="checkmark" size="large" /> :  <Icon color="red" name="close" size="large" />}</Table.Cell>
                   </Table.Row>
                 );
               })}
 
             {/* false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result  */}
 
-            {/* <Table.Row>
-<Table.Cell>"0x157840be5604f37284b00Ec5801B609710764566"</Table.Cell>
-<Table.Cell>{1000}</Table.Cell>
-<Table.Cell>true</Table.Cell>
-</Table.Row> */}
           </Table.Body>
         </Table>
       </div>
@@ -902,8 +885,6 @@ function Banking() {
               {/* <Table.HeaderCell>Interest Occured</Table.HeaderCell> */}
               <Table.HeaderCell>Status</Table.HeaderCell>
               <Table.HeaderCell>Clear Loan</Table.HeaderCell>
-
-
             </Table.Row>
           </Table.Header>
 
@@ -920,8 +901,13 @@ function Banking() {
                     <Table.Cell>
                       {data.isBorrowed ? "True" : "False"}
                     </Table.Cell>
-                    {data.isClear ? <Icon color='green' name='checkmark' size='large' /> : <Button basic color="green" onClick={clearLoan}>Exit</Button>}
-
+                    {data.isClear ? (
+                      <Icon color="green" name="checkmark" size="large" />
+                    ) : (
+                      <Button basic color="green" onClick={clearLoan}>
+                        Exit
+                      </Button>
+                    )}
                   </Table.Row>
                 );
               })}
@@ -938,34 +924,37 @@ function Banking() {
       <div>
         <Divider />
 
-        <Segment inverted vertical style={{ padding: '5em 0em' }}>
+        <Segment inverted vertical style={{ padding: "5em 0em" }}>
           <Container>
             <Grid divided inverted stackable>
               <Grid.Row>
                 <Grid.Column width={3}>
-                  <Header inverted as='h4' content='About' />
+                  <Header inverted as="h4" content="About" />
                   <List link inverted>
-                    <List.Item as='a'>Sitemap</List.Item>
-                    <List.Item as='a'>Contact Us</List.Item>
-                    <List.Item as='a'>Crypto meets</List.Item>
-                    <List.Item as='a'>Future Plans</List.Item>
+                    <List.Item as="a">Sitemap</List.Item>
+                    <List.Item as="a">Contact Us</List.Item>
+                    <List.Item as="a">Crypto meets</List.Item>
+                    <List.Item as="a">Future Plans</List.Item>
                   </List>
                 </Grid.Column>
                 <Grid.Column width={3}>
-                  <Header inverted as='h4' content='Services' />
+                  <Header inverted as="h4" content="Services" />
                   <List link inverted>
-                    <List.Item as={Link} to='/banking'>Decentralized Forex</List.Item>
-                    <List.Item as='a'>Lending</List.Item>
-                    <List.Item as='a'>Transfer</List.Item>
-                    <List.Item as='a'> Token Swap</List.Item>
+                    <List.Item as={Link} to="/banking">
+                      Decentralized Forex
+                    </List.Item>
+                    <List.Item as="a">Lending</List.Item>
+                    <List.Item as="a">Transfer</List.Item>
+                    <List.Item as="a"> Token Swap</List.Item>
                   </List>
                 </Grid.Column>
                 <Grid.Column width={7}>
-                  <Header as='h4' inverted>
+                  <Header as="h4" inverted>
                     Trust and Security
                   </Header>
                   <p>
-                    We Served Our Customer Since The start of the Blockchain Technology.
+                    We Served Our Customer Since The start of the Blockchain
+                    Technology.
                   </p>
                 </Grid.Column>
               </Grid.Row>

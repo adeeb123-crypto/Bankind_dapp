@@ -8,6 +8,7 @@ import { Header, Icon, Image, Segment, Divider, Table, Breadcrumb } from "semant
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
+import "./bank.css"
 const colors = [
   'black'
 ]
@@ -36,7 +37,7 @@ function Banks() {
       setArrayData(temp_data)
     }
 
-    window.localStorage.clear()
+    // window.localStorage.clear()
 
   }, [arrayData]
   );
@@ -75,7 +76,7 @@ function Banks() {
           setTokenSymbol("EUR")
           let responseEcb = await callContractECB.methods.approve(contractAddressbnksys, amount * 100000000).send({ from: address, gas: 1000000 });
           let response = await callContract.methods
-            .addBranch(bankid, branchaddress, amount * 100000000, tokenSymbol)
+            .addBranch(bankid, branchaddress, amount * 100000000, "EUR")
             .send({ from: address, gas: 1000000 })
           console.log("Response from addbank:", response)
 
@@ -108,7 +109,7 @@ function Banks() {
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseFed);
           let response = await callContract.methods
-            .addBranch(bankid, branchaddress, amount * 100000000, tokenSymbol)
+            .addBranch(bankid, branchaddress, amount * 100000000, "USD")
             .send({ from: address, gas: 1000000 })
           console.log(response)
 
@@ -142,7 +143,7 @@ function Banks() {
   }
 
   return (
-    <div>
+    <div className="main_page_bg" >
 
       <div>
         <Header as="h2" icon textAlign="center">

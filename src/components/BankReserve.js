@@ -1,14 +1,13 @@
+//Need to make data consistent as on reaload the table dissapears
 import React, { useEffect } from "react";
 import { Button, Form, Header, Icon, Image } from "semantic-ui-react";
 import { useState, use } from "react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
-import { Table } from 'semantic-ui-react'
+import { Table } from "semantic-ui-react";
 
-const colors = [
-  'black'
-]
+const colors = ["black"];
 
 const Web3 = require("web3");
 const ethers = require("ethers");
@@ -20,19 +19,16 @@ function BankReserve() {
   const [amount, setAmount] = useState("");
   const [arrayData, setArrayData] = useState([]);
   const [bankAdded, setBankAdded] = useState(false);
-  const [temp, setTemp] = useState("")
+  const [temp, setTemp] = useState("");
 
   useEffect(() => {
-
-    let temp_data = window.localStorage.getItem("Data")
+    let temp_data = window.localStorage.getItem("Data");
     if (temp_data) {
-      temp_data = JSON.parse(temp_data)
-      setArrayData(temp_data)
+      temp_data = JSON.parse(temp_data);
+      setArrayData(temp_data);
     }
     // window.localStorage.clear();
-
-  }, [arrayData]
-  );
+  }, [arrayData]);
 
   async function addbank() {
     try {
@@ -58,82 +54,88 @@ function BankReserve() {
         ABIbnksys,
         contractAddressbnksys
       );
-      const callContractECB = new web3eth.eth.Contract(ABIEcb, contractAddressEcb);
-      const callContractFED = new web3eth.eth.Contract(ABIFed, contractAddressFed);
+      const callContractECB = new web3eth.eth.Contract(
+        ABIEcb,
+        contractAddressEcb
+      );
+      const callContractFED = new web3eth.eth.Contract(
+        ABIFed,
+        contractAddressFed
+      );
       if (web3eth.givenProvider) {
         console.log("Hello Provider Here", web3eth.givenProvider);
         let address = web3eth.givenProvider.selectedAddress;
         console.log("address", address);
 
         if (centralbankid == 0) {
-          setTokenSymbol("EUR")
-          let responseEcb = await callContractECB.methods.approve(contractAddressbnksys, amount * 100000000).send({ from: address, gas: 1000000 });
+          setTokenSymbol("");
+
+          let responseEcb = await callContractECB.methods
+            .approve(contractAddressbnksys, amount * 100000000)
+            .send({ from: address, gas: 1000000 });
+          setTokenSymbol("EUR");
           let response = await callContract.methods
-            .addBank(bankaddress, tokenSymbol, centralbankid, amount * 100000000)
+            .addBank(
+              bankaddress,
+              "EUR",
+              centralbankid,
+              amount * 100000000
+            )
             .send({ from: address, gas: 1000000 });
 
-          let responseP1 = await callContract.methods
-            .banks(0)
-            .call();
-          console.log("Response from addbank:", response)
-          console.log("call bank:", responseP1)
+          let responseP1 = await callContract.methods.banks(0).call();
+          console.log("Response from addbank:", response);
+          console.log("call bank:", responseP1);
 
           let tmp_data = arrayData;
-          tmp_data.push(responseP1)
-          console.log(tmp_data)
-          setArrayData(tmp_data)
-          window.localStorage.setItem("Data", JSON.stringify(tmp_data))
+          tmp_data.push(responseP1);
+          console.log(tmp_data);
+          setArrayData(tmp_data);
+          window.localStorage.setItem("Data", JSON.stringify(tmp_data));
           console.log("arrayData:", arrayData);
           console.log("arrayData:", arrayData[0].amount);
           console.log("arrayData:", arrayData[0].bank);
-          // setArrayData([])
-          // if (response) {
-          //   setArrayData(tmp_data)
-          //   setAddBankStatus(true)
-          // } console.log("tmp_data", tmp_data)
-        }
-        else {
-          setTokenSymbol("USD")
+        } else {
+          setTokenSymbol("");
+          setTokenSymbol("USD");
           let responseFed = await callContractFED.methods
-            .approve(contractAddressbnksys, amount * 10e8)
+            .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseFed);
           let response = await callContract.methods
-            .addBank(bankaddress, tokenSymbol, centralbankid, amount * 10e8)
-            .send({ from: address, gas: 1000000 })
-          let responseP2 = await callContract.methods
-            .banks(1)
-            .call();
+            .addBank(
+              bankaddress,
+              "USD",
+              centralbankid,
+              amount * 100000000
+            )
+            .send({ from: address, gas: 1000000 });
+          let responseP2 = await callContract.methods.banks(1).call();
 
-          console.log(responseFed)
-          console.log(response)
+          console.log(responseFed);
+          console.log(response);
 
           // response = {addres: hhkujiiio, status: true, id:555, amount:8885454}
           let tmp_data = arrayData;
-          tmp_data.push(responseP2)
-          console.log("tmp_data", tmp_data)
-          setArrayData(tmp_data)
-          window.localStorage.setItem("Data", JSON.stringify(tmp_data))
-          console.log("arrayData:", arrayData[0].amount)
-          console.log("arrayData:", arrayData[0].bank)
-
+          tmp_data.push(responseP2);
+          console.log("tmp_data", tmp_data);
+          setArrayData(tmp_data);
+          window.localStorage.setItem("Data", JSON.stringify(tmp_data));
+          console.log("arrayData:", arrayData[0].amount);
+          console.log("arrayData:", arrayData[0].bank);
         }
       }
     } catch (error) {
       console.log(Error);
     }
-
   }
-
-
-
 
   return (
     <div>
       <div>
         <Header as="h2" icon textAlign="center">
           <Icon name="money" circular />
-          <Header.Content>  World Token Reserve</Header.Content>
+          <Header.Content> World Token Reserve</Header.Content>
         </Header>
         <Image
           centered
@@ -143,25 +145,37 @@ function BankReserve() {
       </div>
       <Form unstackable>
         <Form.Group widths={2}>
-          <Form.Input label="Bank Adress" placeholder="0xfsc257d..." type="text"
+          <Form.Input
+            label="Bank Adress"
+            placeholder="0xfsc257d..."
+            type="text"
             value={bankaddress}
-            onChange={(e) => setBankAddress(e.target.value)} />
-          <Form.Input label="Amount" placeholder="10" type="text"
+            onChange={(e) => setBankAddress(e.target.value)}
+          />
+          <Form.Input
+            label="Amount"
+            placeholder="10"
+            type="text"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)} />
-          <Form.Input label="Central Bank ID" placeholder="0" type="text"
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <Form.Input
+            label="Central Bank ID"
+            placeholder="0"
+            type="text"
             value={centralbankid}
-            onChange={(e) => setCentralBankID(e.target.value)} />
+            onChange={(e) => setCentralBankID(e.target.value)}
+          />
         </Form.Group>
 
         {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
-        <Button type="submit" onClick={addbank}>Submit</Button>
+        <Button type="submit" onClick={addbank}>
+          Submit
+        </Button>
       </Form>
 
-
       <div>
-
-        <Table color='black' key={colors} inverted>
+        <Table color="black" key={colors} inverted>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Bank Address</Table.HeaderCell>
@@ -171,31 +185,31 @@ function BankReserve() {
           </Table.Header>
 
           <Table.Body>
-            {
-
-              (arrayData.length > 0) &&
+            {arrayData.length > 0 &&
               arrayData.map((data, index) => {
                 return (
                   <Table.Row key={index}>
                     <Table.Cell>{data.bank}</Table.Cell>
-                    <Table.Cell>{data.amount / 10e7} {data.tokenSymbol}</Table.Cell>
-                    <Table.Cell>{data.status ?  <Icon color='green' name='checkmark' size='large' /> : 'True'}</Table.Cell>
+                    <Table.Cell>
+                      {data.amount / 10e7} {data.tokenSymbol}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {data.status ? (
+                        <Icon color="green" name="checkmark" size="large" />
+                      ) : (
+                        "True"
+                      )}
+                    </Table.Cell>
                   </Table.Row>
-                )
-              }
-              )}
+                );
+              })}
           </Table.Body>
         </Table>
-
       </div>
     </div>
-
-
   );
 }
 export default BankReserve;
-
-
 
 // <Table.Body>
 //           {

@@ -20,21 +20,20 @@ import { contractAddressbnksys, ABIbnksys } from "../constants";
 import "./bank.css";
 const colors = ["black"];
 
-function Forex() {
+function Borrow() {
   const Web3 = require("web3");
   const ethers = require("ethers");
 
-  const [branchName, setBranchName] = useState("");
-  const [detailsBranchID, setDetailsBranchID] = useState("");
-  const [balanceBranch, setBalanceBranch] = useState("");
+  const [bankid, setBankID] = useState("");
+  const [branchaddress, setBranchAddress] = useState("");
+  const [amount, setAmount] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
-  const [isconnectbuttonclicked, setIsConnectButtonClicked] = useState("");
+  const [centralbankid, setCentralBankID] = useState("");
   const [bankAdded, setBankAdded] = useState(false);
   const [arrayData, setArrayData] = useState([]);
   const [isActive, setIsActive] = useState("");
-
+  const [date, setDate] = useState("");
   function handleClickEventForex() {
-    checkDetails();
     setIsActive(0);
     return;
     const new_index = "";
@@ -44,10 +43,11 @@ function Forex() {
   }
 
   function handleClickEventLend() {
-    setIsActive(1);
+    checkBorrowRequest();
+    setIsActive(0);
   }
 
-  async function checkDetails() {
+  async function checkBorrowRequest() {
     try {
       if (
         typeof window !== "undefined" &&
@@ -90,64 +90,60 @@ function Forex() {
 
         if (IDByAddress.bankId == 0) {
           setTokenSymbol("EUR");
-          setBranchName("Europe Branch");
+
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
             .call();
-          setDetailsBranchID(IDByAddress.branchId);
 
-          let balanceOf = await callContractECB.methods
-            .balanceOf(address)
+          let borrowDetails = await callContract.methods
+            .borrowDetails(address)
             .call();
-          setBalanceBranch(balanceOf);
+          console.log("borrowDetails", borrowDetails);
 
-          let forexDetails = await callContract.methods
-            .forexDetails(address)
-            .call();
-          console.log("forexDetails", forexDetails);
-
-          let ReqDetailsClient1 = await callContract.methods
-            .requestDetails(forexDetails.byClient, forexDetails.reqId)
+          let positionDetails1 = await callContract.methods
+            .positionDetails(borrowDetails.byClient, borrowDetails.positionId)
             .call();
 
-          console.log("ReqDetailsClient1", ReqDetailsClient1);
+          console.log("positionDetails1", positionDetails1);
 
           let tmp_data = arrayData;
-          tmp_data.push(ReqDetailsClient1);
+          tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
-          console.log("arrayData1", arrayData);
+          console.log("arrydata", arrayData);
+          const unixTimestamp = arrayData[0].timeStamp;
+          const date = new Date(unixTimestamp * 1000);
+          const humanDate = date.toLocaleString();
+          console.log("Humandate:", humanDate);
+          setDate(humanDate);
         } else {
           setTokenSymbol("USD");
-          setBranchName("USD Branch");
 
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
             .call();
-          setDetailsBranchID(IDByAddress.branchId);
 
-          let balanceOf = await callContractFED.methods
-            .balanceOf(address)
+          let borrowDetails = await callContract.methods
+            .borrowDetails(address)
             .call();
-          setBalanceBranch(balanceOf);
+          console.log("borrowDetails", borrowDetails);
 
-          let forexDetails = await callContract.methods
-            .forexDetails(address)
-            .call();
-          console.log("forexDetails", forexDetails);
-
-          let ReqDetailsClient1 = await callContract.methods
-            .requestDetails(forexDetails.byClient, forexDetails.reqId)
+          let positionDetails1 = await callContract.methods
+            .positionDetails(borrowDetails.byClient, borrowDetails.positionId)
             .call();
 
-          console.log("ReqDetailsClient1", ReqDetailsClient1);
+          console.log("positionDetails1", positionDetails1);
 
           let tmp_data = arrayData;
-          tmp_data.push(ReqDetailsClient1);
+          tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
-          console.log("arrayData2", arrayData);
+          console.log("arrydata", arrayData);
+          const unixTimestamp = arrayData[0].timeStamp;
+          const date = new Date(unixTimestamp * 1000);
+          const humanDate = date.toLocaleString();
+          console.log("Humandate:", humanDate);
+          setDate(humanDate);
         }
       }
-      setIsConnectButtonClicked(true);
     } catch (error) {
       console.log(Error);
     }
@@ -159,17 +155,17 @@ function Forex() {
         <Divider />
         <Header as="h2" icon textAlign="center">
           <Icon name="money bill alternate" circular />
-          <Header.Content>Forex History</Header.Content>
+          <Header.Content>Borrow History</Header.Content>
         </Header>
 
         <Accordion>
           <Accordion.Title
             active={isActive === 0}
             index={0}
-            onClick={handleClickEventForex}
+            onClick={handleClickEventLend}
           >
             <Icon name="dropdown" />
-            Forex
+            Borrow
           </Accordion.Title>
           <Accordion.Content active={isActive === 0}>
             {/* <Header as="h2" icon textAlign="center">
@@ -229,33 +225,24 @@ function Forex() {
                 <Grid reversed="computer" columns="equal">
                   <Grid.Row color="black">
                     <Grid.Column>
-                      Amount USD
-                      <Grid.Column>
-                        {arrayData[0]?.amountInUsd / 10e7}
-                      </Grid.Column>
+                      Branch
+                      <Grid.Column>{arrayData[0]?.branchId}</Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      Amount EUR
-                      <Grid.Column>
-                        {arrayData[0]?.amountInEur / 10e7}
-                      </Grid.Column>
+                      Expected amount %<Grid.Column>10397.475</Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      To Client
-                      <Grid.Column>
-                        {arrayData[0]?.toClient?.slice(0, 6)}...
-                      </Grid.Column>
+                      Amount Borrowed
+                      <Grid.Column>{arrayData[0]?.amountBorrowed}</Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      From Client
-                      <Grid.Column>
-                        {arrayData[0]?.byClient?.slice(0, 6)}...
-                      </Grid.Column>
+                      Last Updated
+                      <Grid.Column>{date}</Grid.Column>
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row color="black">
                     <Grid.Column>
-                      Done
+                      Approve
                       <Grid.Column>
                         {arrayData[0]?.isDone ? (
                           <Icon color="green" name="checkmark" size="large" />
@@ -265,9 +252,10 @@ function Forex() {
                       </Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      Deposited to Branch
+                      Exit
                       <Grid.Column>
-                        {arrayData[0]?.isDepositedToBranch ? (
+                        {" "}
+                        {arrayData[0]?.isClear ? (
                           <Icon color="green" name="checkmark" size="large" />
                         ) : (
                           <Icon color="red" name="close" size="large" />
@@ -275,12 +263,18 @@ function Forex() {
                       </Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      Forex Rate
-                      <Grid.Column>129.9684 EUR/USD</Grid.Column>
+                      Borrowed
+                      <Grid.Column>
+                        {arrayData[0]?.isBorrowed ? (
+                          <Icon color="green" name="checkmark" size="large" />
+                        ) : (
+                          <Icon color="red" name="close" size="large" />
+                        )}
+                      </Grid.Column>
                     </Grid.Column>
                     <Grid.Column>
-                      Branch name
-                      <Grid.Column>{branchName}</Grid.Column>
+                      cost
+                      <Grid.Column>-</Grid.Column>
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
@@ -337,4 +331,4 @@ function Forex() {
     </div>
   );
 }
-export default Forex;
+export default Borrow;
