@@ -1,11 +1,14 @@
 //Need to make data consistent as on reaload the table dissapears
 import React, { useEffect } from "react";
-import { Button, Form, Header, Icon, Image } from "semantic-ui-react";
+import { Button, Divider, Form, Header, Icon, Image } from "semantic-ui-react";
 import { useState, use } from "react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Table } from "semantic-ui-react";
+import "./bankreserve.css"
+
+
 
 const colors = ["black"];
 
@@ -131,17 +134,13 @@ function BankReserve() {
   }
 
   return (
-    <div>
+    <div className="bank_reserve_page">
       <div>
         <Header as="h2" icon textAlign="center">
-          <Icon name="money" circular />
-          <Header.Content> World Token Reserve</Header.Content>
+          <Icon className="icon_bankreserve" name="money" circular />
+          <Header.Content className="header_content_bankreserve"> World Token Reserve</Header.Content>
         </Header>
-        <Image
-          centered
-          size="large"
-          src="https://react.semantic-ui.com/images/wireframe/centered-paragraph.png"
-        />
+
       </div>
       <Form unstackable>
         <Form.Group widths={2}>
@@ -172,10 +171,11 @@ function BankReserve() {
         <Button type="submit" onClick={addbank}>
           Submit
         </Button>
+        <Divider/>
       </Form>
 
       <div>
-        <Table color="black" key={colors} inverted>
+        <Table color="black" key={colors} >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Bank Address</Table.HeaderCell>

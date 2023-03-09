@@ -17,8 +17,8 @@ import {
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
-import "./bank.css";
-const colors = ["black"];
+import "./forex.css";
+const colors = ["green"];
 
 function Forex() {
   const Web3 = require("web3");
@@ -158,8 +158,8 @@ function Forex() {
       <div>
         <Divider />
         <Header as="h2" icon textAlign="center">
-          <Icon name="money bill alternate" circular />
-          <Header.Content>Forex History</Header.Content>
+          <Icon className="icon_forex" name="money bill alternate" circular />
+          <Header.Content className="header_content_forex">Forex History</Header.Content>
         </Header>
 
         <Accordion>
@@ -168,8 +168,8 @@ function Forex() {
             index={0}
             onClick={handleClickEventForex}
           >
-            <Icon name="dropdown" />
-            Forex
+            <Icon className="icon_forex" name="dropdown" ></Icon>
+            <Header.Content className="header_content_forex">Forex</Header.Content>
           </Accordion.Title>
           <Accordion.Content active={isActive === 0}>
             {/* <Header as="h2" icon textAlign="center">
@@ -212,7 +212,7 @@ function Forex() {
                 </Card.Group>
               </div> */}
 
-            <Table color="black" key={colors} inverted>
+            <Table color="black" key={colors}>
               {/* <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>To Client Address</Table.HeaderCell>
@@ -227,7 +227,7 @@ function Forex() {
 
               <div>
                 <Grid reversed="computer" columns="equal">
-                  <Grid.Row color="black">
+                  <Grid.Row color="white">
                     <Grid.Column>
                       Amount USD
                       <Grid.Column>
@@ -253,7 +253,7 @@ function Forex() {
                       </Grid.Column>
                     </Grid.Column>
                   </Grid.Row>
-                  <Grid.Row color="black">
+                  <Grid.Row color="white">
                     <Grid.Column>
                       Done
                       <Grid.Column>

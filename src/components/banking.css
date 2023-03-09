@@ -1,0 +1,20 @@
+.banking_page_bg {
+  background-color: #18122b;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.header_content_forex {
+  color: white;
+}
+
+.icon_banking {
+    color: white;
+  }
+
+
+  .ui.div.banking_footer{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    background-color: blue;
+  }

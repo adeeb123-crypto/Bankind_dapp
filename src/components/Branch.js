@@ -18,8 +18,9 @@ import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Card } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import "./branch.css"
 
-const colors = ["black"];
+const colors = ["#393053"];
 
 const Web3 = require("web3");
 const ethers = require("ethers");
@@ -50,52 +51,7 @@ function Branch() {
 
   const ref = useRef(null);
 
-  const AccordionExampleStandardShorthand = () => (
-    <div>
-      <Accordion
-        defaultActiveIndex={0}
-        panels={[
-          {
-            key: "what-is-dog",
-            title: "What is a dog?",
-            content: [
-              "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome",
-              "guest in many households across the world.",
-            ].join(" "),
-          },
-          {
-            key: "kinds-of-dogs",
-            title: "What kinds of dogs are there?",
-            content: [
-              "There are many breeds of dogs. Each breed varies in size and temperament. Owners often select a breed of dog",
-              "that they find to be compatible with their own lifestyle and desires from a companion.",
-            ].join(" "),
-          },
-          {
-            key: "acquire-dog",
-            title: "How do you acquire a dog?",
-            content: {
-              content: (
-                <div>
-                  <p>
-                    Three common ways for a prospective owner to acquire a dog
-                    is from pet shops, private owners, or shelters.
-                  </p>
-                  <p>
-                    A pet shop may be the most convenient way to buy a dog.
-                    Buying a dog from a private owner allows you to assess the
-                    pedigree and upbringing of your dog before choosing to take
-                    it home. Lastly, finding your dog from a shelter, helps give
-                    a good home to a dog who may not find one so readily.
-                  </p>
-                </div>
-              ),
-            },
-          },
-        ]}
-      />
-    </div>
-  );
+
 
   function handleClickEventForex() {
     setIsActive(0);
@@ -657,7 +613,7 @@ function Branch() {
             .requestDetails(forexDetails.byClient, forexDetails.reqId)
             .call();
 
-          let tmp_data = arrayDataForexDet;
+          let tmp_data = [];
           tmp_data.push(requestDetails1);
           console.log(tmp_data);
           setArrayDataForexDet(tmp_data);
@@ -706,7 +662,7 @@ function Branch() {
             .requestDetails(forexDetails.byClient, forexDetails.reqId)
             .call();
 
-          let tmp_data = arrayDataForexDet;
+          let tmp_data = [];
           tmp_data.push(requestDetails1);
           console.log("tmp_data", tmp_data);
           setArrayDataForexDet(tmp_data);
@@ -779,7 +735,7 @@ function Branch() {
 
           console.log("positionDetails1", positionDetails1);
 
-          let tmp_data = arrayDataBorrowDispDet;
+          let tmp_data = [];
           tmp_data.push(positionDetails1);
           console.log(tmp_data);
           setArrayBorrowDispDet(tmp_data);
@@ -808,7 +764,7 @@ function Branch() {
 
           console.log("positionDetails1", positionDetails1);
 
-          let tmp_data = arrayDataBorrowDispDet;
+          let tmp_data = [];
           tmp_data.push(positionDetails1);
           console.log(tmp_data);
           setArrayBorrowDispDet(tmp_data);
@@ -1072,8 +1028,8 @@ function Branch() {
   }
 
   return (
-    <div>
-      <Breadcrumb>
+    <div className="main_page_branch_bg">
+      <Breadcrumb className="bredcrumbs_branch">
         <Breadcrumb.Section href="/" link>
           Home
         </Breadcrumb.Section>
@@ -1083,8 +1039,8 @@ function Branch() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Icon name="user circle outline" circular />
-          <Header.Content> Branch</Header.Content>
+          <Icon className="icon_branch" name="user circle outline" circular />
+          <Header.Content className="header_content_branch"> Branch</Header.Content>
         </Header>
         {/* <Image
                     centered
@@ -1094,10 +1050,10 @@ function Branch() {
       </div>
       <div>
         {" "}
-        <Card.Group centered>
-          <Card>
-            <Card.Content>
-              <Card.Meta>Branch ID: {detailsbranchid}</Card.Meta>
+        <Card.Group centered className="card_connect_branch">
+          <Card >
+            <Card.Content >
+              <Card.Meta >Branch ID: {detailsbranchid}</Card.Meta>
               <Card.Description>Branch: {branchname}</Card.Description>
               <Card.Description>
                 Balance: {balancebranch / 10e7} {tokenSymbol}
@@ -1149,8 +1105,8 @@ function Branch() {
         </Button>
       </Form>
       <Divider />
-      <div>
-        <Table color="black" key={colors} inverted>
+      <div className="table_branch">
+        <Table >
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Client Address</Table.HeaderCell>
@@ -1182,22 +1138,23 @@ function Branch() {
       </div>
 
       <div>
-        <div>
+        <div >
           <Accordion>
             <Accordion.Title
               active={isActive === 0}
               index={0}
               onClick={handleClickEventForex}
+              className="accordian_title_branch"
             >
               <Icon name="dropdown" />
               Forex
             </Accordion.Title>
             <Accordion.Content active={isActive === 0}>
               <Header as="h2" icon textAlign="center">
-                <Icon name="wait" circular size="tiny" />
-                <Header.Content>Pending Forex Requests</Header.Content>
+                <Icon className="icon_branch" name="wait" circular size="tiny" />
+                <Header.Content className="header_content_branch">Pending Forex Requests</Header.Content>
               </Header>
-              <Button secondary onClick={checkForexRequest}>
+              <Button primary onClick={checkForexRequest}>
                 View Requests
               </Button>
               <Button color="grey" onClick={() => navigate("/forex")}>
@@ -1341,20 +1298,21 @@ function Branch() {
                 </Table.Body> */}
               {/* </Table> */}
             </Accordion.Content>
-            <Accordion.Title
+            <Accordion.Title 
               active={isActive === 1}
               index={1}
               onClick={handleClickEventLend}
+              className="accordian_title_branch"
             >
               <Icon name="dropdown" />
               Lending
             </Accordion.Title>
             <Accordion.Content active={isActive === 1}>
               <Header as="h2" icon textAlign="center">
-                <Icon name="wait" circular />
-                <Header.Content>Pending Borrow Requests</Header.Content>
+                <Icon className="icon_branch" name="wait" circular />
+                <Header.Content className="header_content_branch">Pending Borrow Requests</Header.Content>
               </Header>
-              <Button secondary onClick={checkBorrowRequest}>
+              <Button primary onClick={checkBorrowRequest}>
                 View Requests
               </Button>
               <Button color="grey" onClick={() => navigate("/borrow")}>

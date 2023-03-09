@@ -1,0 +1,33 @@
+.main_page_branch_bg{
+    background-color: #18122B;
+    padding-left: 100px;
+    padding-right: 100px;
+    /* height:100vh; */
+}
+
+.bredcrumbs_branch{
+    color: white;
+}
+
+.header_content_branch{
+    color: white;
+}
+
+.icon_branch{
+    color: white;
+}
+
+.card_connect_branch{
+    color: #393053;
+}
+
+.table_branch{
+    color: #393053;
+
+}
+
+.accordian_title_branch{
+    background-color: white;
+    margin-left: 35rem;
+    margin-right: 35rem;
+}

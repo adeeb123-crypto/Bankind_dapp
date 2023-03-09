@@ -17,7 +17,7 @@ import {
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
-import "./bank.css";
+import "./borrow.css";
 const colors = ["black"];
 
 function Borrow() {
@@ -154,8 +154,8 @@ function Borrow() {
       <div>
         <Divider />
         <Header as="h2" icon textAlign="center">
-          <Icon name="money bill alternate" circular />
-          <Header.Content>Borrow History</Header.Content>
+          <Icon className="icon_borrow" name="money bill alternate" circular />
+          <Header.Content className="header_content_borrow ">Borrow History</Header.Content>
         </Header>
 
         <Accordion>
@@ -164,8 +164,8 @@ function Borrow() {
             index={0}
             onClick={handleClickEventLend}
           >
-            <Icon name="dropdown" />
-            Borrow
+            <Icon className="icon_borrow" name="dropdown" />
+            <Header.Content className="header_content_borrow ">Borrow</Header.Content>
           </Accordion.Title>
           <Accordion.Content active={isActive === 0}>
             {/* <Header as="h2" icon textAlign="center">
@@ -208,7 +208,7 @@ function Borrow() {
                 </Card.Group>
               </div> */}
 
-            <Table color="black" key={colors} inverted>
+            <Table color="black" key={colors} >
               {/* <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>To Client Address</Table.HeaderCell>
@@ -223,7 +223,7 @@ function Borrow() {
 
               <div>
                 <Grid reversed="computer" columns="equal">
-                  <Grid.Row color="black">
+                  <Grid.Row color="white">
                     <Grid.Column>
                       Branch
                       <Grid.Column>{arrayData[0]?.branchId}</Grid.Column>
@@ -240,7 +240,7 @@ function Borrow() {
                       <Grid.Column>{date}</Grid.Column>
                     </Grid.Column>
                   </Grid.Row>
-                  <Grid.Row color="black">
+                  <Grid.Row color="white">
                     <Grid.Column>
                       Approve
                       <Grid.Column>

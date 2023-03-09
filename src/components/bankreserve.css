@@ -1,0 +1,14 @@
+.bank_reserve_page{
+    background-color: #18122B;
+     height:100vh;
+     padding-left: 100px;
+     padding-right: 100px;
+}
+
+.icon_bankreserve{
+    color: white;
+}
+
+.header_content_bankreserve{
+    color: white;
+}

@@ -21,6 +21,7 @@ import {
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
+import "./banking.css";
 const colors = ["black"];
 
 const Web3 = require("web3");
@@ -717,12 +718,12 @@ function Banking() {
   }
 
   return (
-    <div>
+    <div className="banking_page_bg">
       <div>
         {isconnected ? (
           <></>
         ) : (
-          <Button floated="right" secondary onClick={giveDetails}>
+          <Button className="icon_banking" floated="right" secondary onClick={giveDetails}>
             Connect
           </Button>
         )}
@@ -764,14 +765,11 @@ function Banking() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Icon name="money" circular />
-          <Header.Content>Forex </Header.Content>
+          <Icon className="icon_banking" name="money" circular />
+          <Header.Content className="icon_banking" 
+          >Forex </Header.Content>
         </Header>
-        <Image
-          centered
-          size="large"
-          src="https://react.semantic-ui.com/images/wireframe/centered-paragraph.png"
-        />
+
       </div>
 
       <Form unstackable>
@@ -801,10 +799,10 @@ function Banking() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Header.Content>Forex Statement </Header.Content>
+          <Header.Content className="header_content_forex">Forex Statement </Header.Content>
         </Header>
 
-        <Table color="black" key={colors} inverted>
+        <Table color="black" key={colors}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Receiver Address</Table.HeaderCell>
@@ -843,14 +841,10 @@ function Banking() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Icon name="handshake outline" circular />
-          <Header.Content>Lending </Header.Content>
+          <Icon className="header_content_forex" name="handshake outline" circular />
+          <Header.Content className="header_content_forex">Lending </Header.Content>
         </Header>
-        <Image
-          centered
-          size="large"
-          src="https://react.semantic-ui.com/images/wireframe/centered-paragraph.png"
-        />
+
       </div>
 
       <Form unstackable>
@@ -869,13 +863,18 @@ function Banking() {
         <Button type="submit" onClick={borrow}>
           Submit
         </Button>
+        <Divider horizontal />
+      <Divider horizontal/>
+        <Divider horizontal/>
+        <Divider horizontal/>
+        <Divider horizontal/>
       </Form>
       <div>
         <Header as="h2" icon textAlign="center">
-          <Header.Content>Lending Statement </Header.Content>
+          <Header.Content className="header_content_forex">Lending Statement </Header.Content>
         </Header>
 
-        <Table color="black" key={colors} inverted>
+        <Table color="black" key={colors}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
@@ -920,11 +919,20 @@ function Banking() {
           </Table.Body>
         </Table>
       </div>
+      <Divider horizontal />
+      <Divider horizontal/>
+      <Divider horizontal/>
+      <Divider horizontal />
+      <Divider horizontal/>
+      <Divider horizontal/>
+      <Divider horizontal />
+      <Divider horizontal/>
+      <Divider horizontal/>
 
-      <div>
-        <Divider />
+      <div className="banking_footer">
+        <Divider horizontal/>
 
-        <Segment inverted vertical style={{ padding: "5em 0em" }}>
+        <Segment inverted vertical style={{ padding: "0em 0em" }}>
           <Container>
             <Grid divided inverted stackable>
               <Grid.Row>
@@ -948,7 +956,25 @@ function Banking() {
                     <List.Item as="a"> Token Swap</List.Item>
                   </List>
                 </Grid.Column>
-                <Grid.Column width={7}>
+                <Grid.Column width={3}>
+                  <Header as="h4" inverted>
+                    Trust and Security
+                  </Header>
+                  <p>
+                    We Served Our Customer Since The start of the Blockchain
+                    Technology.
+                  </p>
+                </Grid.Column>
+                <Grid.Column width={3}>
+                  <Header as="h4" inverted>
+                    Trust and Security
+                  </Header>
+                  <p>
+                    We Served Our Customer Since The start of the Blockchain
+                    Technology.
+                  </p>
+                </Grid.Column>
+                <Grid.Column width={3}>
                   <Header as="h4" inverted>
                     Trust and Security
                   </Header>
