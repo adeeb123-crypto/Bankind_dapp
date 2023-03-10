@@ -1,6 +1,7 @@
 .body
 {
   background-color: white;
+  
 }
 
 
@@ -9,5 +10,17 @@
   }
   
   .header_content_borrow {
+    color: white;
+  }
+
+  .banking_page_bg::-webkit-scrollbar {
+    display: none;
+  }
+
+  i.icon{
+    color: white;
+  }
+
+  .ui.pagination.menu .item {
     color: white;
   }

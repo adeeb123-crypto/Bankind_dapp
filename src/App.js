@@ -15,6 +15,7 @@ import BankReserve from "./components/BankReserve";
 import Banking from './components/Banking';
 import Forex from './components/Forex';
 import Borrow from './components/Borrow';
+
 import './App.css';
 const ethers = require('ethers');
 var Web3 = require('web3');
@@ -50,6 +51,7 @@ function App() {
          <Route path = '/borrow' element ={<Borrow />}/>
        </Routes>
        </BrowserRouter>
+      
    
      </div>
         

@@ -13,6 +13,7 @@ import {
   Grid,
   Card,
   Accordion,
+  Menu
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -220,72 +221,82 @@ function Borrow() {
               </div> */}
 
             <Table color="black" key={colors}>
-              
-              {arrayData.length > 0 && arrayData.map((data, index) => {
-                return (
-                  <Grid key={index} reversed="computer" columns="equal">
-                    
-                    <Grid.Row color="white">
-                      <Grid.Column>
-                        Branch
-                        <Grid.Column>{data?.branchId}</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Expected amount %<Grid.Column>10397.475</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Amount Borrowed
+              {arrayData.length > 0 &&
+                arrayData.map((data, index) => {
+                  return (
+                    <Grid key={index} reversed="computer" columns="equal">
+                      <Grid.Row color="white">
                         <Grid.Column>
-                          {data?.amountBorrowed / 10e7}
+                          Branch
+                          <Grid.Column>{data?.branchId}</Grid.Column>
                         </Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Last Updated
-                        <Grid.Column>{date}</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row color="white">
-                      <Grid.Column>
-                        Approve
                         <Grid.Column>
-                          {data?.isDone ? (
-                            <Icon color="green" name="checkmark" size="large" />
-                          ) : (
-                            <Icon color="red" name="close" size="large" />
-                          )}
+                          Expected amount %<Grid.Column>10397.475</Grid.Column>
                         </Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Exit
                         <Grid.Column>
-                          {" "}
-                          {data?.isClear ? (
-                            <Icon color="green" name="checkmark" size="large" />
-                          ) : (
-                            <Icon color="red" name="close" size="large" />
-                          )}
+                          Amount Borrowed
+                          <Grid.Column>
+                            {data?.amountBorrowed / 10e7}
+                          </Grid.Column>
                         </Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Borrowed
                         <Grid.Column>
-                          {data?.isBorrowed ? (
-                            <Icon color="green" name="checkmark" size="large" />
-                          ) : (
-                            <Icon color="red" name="close" size="large" />
-                          )}
+                          Last Updated
+                          <Grid.Column>{date}</Grid.Column>
                         </Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        cost
-                        <Grid.Column>-</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Divider/>
-                  </Grid>
-                  
-                );
-              })}
+                      </Grid.Row>
+                      <Grid.Row color="white">
+                        <Grid.Column>
+                          Approve
+                          <Grid.Column>
+                            {data?.isDone ? (
+                              <Icon
+                                color="green"
+                                name="checkmark"
+                                size="large"
+                              />
+                            ) : (
+                              <Icon color="red" name="close" size="large" />
+                            )}
+                          </Grid.Column>
+                        </Grid.Column>
+                        <Grid.Column>
+                          Exit
+                          <Grid.Column>
+                            {" "}
+                            {data?.isClear ? (
+                              <Icon
+                                color="green"
+                                name="checkmark"
+                                size="large"
+                              />
+                            ) : (
+                              <Icon color="red" name="close" size="large" />
+                            )}
+                          </Grid.Column>
+                        </Grid.Column>
+                        <Grid.Column>
+                          Borrowed
+                          <Grid.Column>
+                            {data?.isBorrowed ? (
+                              <Icon
+                                color="green"
+                                name="checkmark"
+                                size="large"
+                              />
+                            ) : (
+                              <Icon color="red" name="close" size="large" />
+                            )}
+                          </Grid.Column>
+                        </Grid.Column>
+                        <Grid.Column>
+                          cost
+                          <Grid.Column>-</Grid.Column>
+                        </Grid.Column>
+                      </Grid.Row>
+                      <Divider />
+                    </Grid>
+                  );
+                })}
 
               {/* <Table.Header>
                   <Table.Row>
@@ -368,6 +379,24 @@ function Borrow() {
                       );
                     })}
                 </Table.Body> */}
+              <Table.Footer>
+                <Table.Row>
+                  <Table.HeaderCell colSpan="3">
+                    <Menu floated="right" pagination>
+                      <Menu.Item as="a" icon>
+                        <Icon name="chevron left" />
+                      </Menu.Item>
+                      <Menu.Item as="a">1</Menu.Item>
+                      <Menu.Item as="a">2</Menu.Item>
+                      <Menu.Item as="a">3</Menu.Item>
+                      <Menu.Item as="a">4</Menu.Item>
+                      <Menu.Item as="a" icon>
+                        <Icon name="chevron right" />
+                      </Menu.Item>
+                    </Menu>
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Footer>
             </Table>
           </Accordion.Content>
         </Accordion>
