@@ -1,3 +1,7 @@
+body {
+    background-color: #18122B;
+}
+
 .main_page_branch_bg{
     background-color: #18122B;
     padding-left: 100px;
@@ -26,8 +30,21 @@
 
 }
 
+.ui.table{
+    background-color:  #443C68;
+}
+
 /* .accordian_title_branch{
     background-color: white;
     margin-left: 35rem;
     margin-right: 35rem;
 } */
+
+
+.ui.accordion .title:not(.ui){
+    color: white;
+    background-color: #443C68;
+    display: flex;
+    align-items: start;
+    border-radius: 20px;
+}

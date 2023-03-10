@@ -33,18 +33,23 @@ function Borrow() {
   const [arrayData, setArrayData] = useState([]);
   const [isActive, setIsActive] = useState("");
   const [date, setDate] = useState("");
-  function handleClickEventForex() {
-    setIsActive(0);
-    return;
-    const new_index = "";
-    if (isActive === 0) {
-      setIsActive("");
+
+  useEffect(() => {
+    let temp_data_borrow = window.localStorage.getItem("Borrow_page");
+    if (temp_data_borrow) {
+      temp_data_borrow = JSON.parse(temp_data_borrow);
+      setArrayData(temp_data_borrow);
     }
-  }
+    // window.localStorage.clear()
+  });
 
   function handleClickEventLend() {
     checkBorrowRequest();
-    setIsActive(0);
+    if (isActive == 1) {
+      setIsActive("");
+    } else {
+      setIsActive(1);
+    }
   }
 
   async function checkBorrowRequest() {
@@ -109,6 +114,7 @@ function Borrow() {
           let tmp_data = arrayData;
           tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
+          window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
           console.log("arrydata", arrayData);
           const unixTimestamp = arrayData[0].timeStamp;
           const date = new Date(unixTimestamp * 1000);
@@ -137,6 +143,7 @@ function Borrow() {
           tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
           console.log("arrydata", arrayData);
+          window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
           const unixTimestamp = arrayData[0].timeStamp;
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
@@ -155,19 +162,23 @@ function Borrow() {
         <Divider />
         <Header as="h2" icon textAlign="center">
           <Icon className="icon_borrow" name="money bill alternate" circular />
-          <Header.Content className="header_content_borrow ">Borrow History</Header.Content>
+          <Header.Content className="header_content_borrow ">
+            Borrow History
+          </Header.Content>
         </Header>
 
         <Accordion>
           <Accordion.Title
-            active={isActive === 0}
+            active={isActive === 1}
             index={0}
             onClick={handleClickEventLend}
           >
             <Icon className="icon_borrow" name="dropdown" />
-            <Header.Content className="header_content_borrow ">Borrow</Header.Content>
+            <Header.Content className="header_content_borrow ">
+              Borrow
+            </Header.Content>
           </Accordion.Title>
-          <Accordion.Content active={isActive === 0}>
+          <Accordion.Content active={isActive === 1}>
             {/* <Header as="h2" icon textAlign="center">
                 <Icon name="wait" circular size="tiny" />
                 <Header.Content>Pending Forex Requests</Header.Content>
@@ -175,7 +186,7 @@ function Borrow() {
             {/* <Button secondary onClick={checkForexRequest}>
                 View Requests
               </Button> */}
-            <Divider />
+            <Divider horizontal />
             {/* <div>
                 <Card.Group centered>
                   {arrayDataForexDet.length > 0 &&
@@ -208,7 +219,74 @@ function Borrow() {
                 </Card.Group>
               </div> */}
 
-            <Table color="black" key={colors} >
+            <Table color="black" key={colors}>
+              
+              {arrayData.length > 0 && arrayData.map((data, index) => {
+                return (
+                  <Grid key={index} reversed="computer" columns="equal">
+                    
+                    <Grid.Row color="white">
+                      <Grid.Column>
+                        Branch
+                        <Grid.Column>{data?.branchId}</Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        Expected amount %<Grid.Column>10397.475</Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        Amount Borrowed
+                        <Grid.Column>
+                          {data?.amountBorrowed / 10e7}
+                        </Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        Last Updated
+                        <Grid.Column>{date}</Grid.Column>
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row color="white">
+                      <Grid.Column>
+                        Approve
+                        <Grid.Column>
+                          {data?.isDone ? (
+                            <Icon color="green" name="checkmark" size="large" />
+                          ) : (
+                            <Icon color="red" name="close" size="large" />
+                          )}
+                        </Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        Exit
+                        <Grid.Column>
+                          {" "}
+                          {data?.isClear ? (
+                            <Icon color="green" name="checkmark" size="large" />
+                          ) : (
+                            <Icon color="red" name="close" size="large" />
+                          )}
+                        </Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        Borrowed
+                        <Grid.Column>
+                          {data?.isBorrowed ? (
+                            <Icon color="green" name="checkmark" size="large" />
+                          ) : (
+                            <Icon color="red" name="close" size="large" />
+                          )}
+                        </Grid.Column>
+                      </Grid.Column>
+                      <Grid.Column>
+                        cost
+                        <Grid.Column>-</Grid.Column>
+                      </Grid.Column>
+                    </Grid.Row>
+                    <Divider/>
+                  </Grid>
+                  
+                );
+              })}
+
               {/* <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>To Client Address</Table.HeaderCell>
@@ -221,64 +299,32 @@ function Borrow() {
                   </Table.Row>
                 </Table.Header> */}
 
-              <div>
-                <Grid reversed="computer" columns="equal">
-                  <Grid.Row color="white">
-                    <Grid.Column>
-                      Branch
-                      <Grid.Column>{arrayData[0]?.branchId}</Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      Expected amount %<Grid.Column>10397.475</Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      Amount Borrowed
-                      <Grid.Column>{arrayData[0]?.amountBorrowed}</Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      Last Updated
-                      <Grid.Column>{date}</Grid.Column>
-                    </Grid.Column>
-                  </Grid.Row>
-                  <Grid.Row color="white">
-                    <Grid.Column>
-                      Approve
-                      <Grid.Column>
-                        {arrayData[0]?.isDone ? (
+              {/* {arrayDataF.length > 0 &&
+                arrayDataF.map((data, index) => {
+                  console.log(data[index]);
+                  return (
+                    <Table.Row key={index}>
+                      <Table.Cell>{data.toClient}</Table.Cell>
+                      <Table.Cell>{data.amountInUsd / 10e7} USD</Table.Cell>
+                      <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
+                      <Table.Cell>{data.reqId}</Table.Cell>
+                      <Table.Cell>
+                        {data.isDepositedToBranch ? (
                           <Icon color="green" name="checkmark" size="large" />
                         ) : (
                           <Icon color="red" name="close" size="large" />
                         )}
-                      </Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      Exit
-                      <Grid.Column>
-                        {" "}
-                        {arrayData[0]?.isClear ? (
+                      </Table.Cell>
+                      <Table.Cell>
+                        {data.isDone ? (
                           <Icon color="green" name="checkmark" size="large" />
                         ) : (
                           <Icon color="red" name="close" size="large" />
                         )}
-                      </Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      Borrowed
-                      <Grid.Column>
-                        {arrayData[0]?.isBorrowed ? (
-                          <Icon color="green" name="checkmark" size="large" />
-                        ) : (
-                          <Icon color="red" name="close" size="large" />
-                        )}
-                      </Grid.Column>
-                    </Grid.Column>
-                    <Grid.Column>
-                      cost
-                      <Grid.Column>-</Grid.Column>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-              </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })} */}
 
               {/* <Table.Body>
                   {arrayDataForexDet.length > 0 &&

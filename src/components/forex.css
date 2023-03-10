@@ -5,3 +5,10 @@
   .header_content_forex {
     color: white;
   }
+
+  .ui.grid>.row>.column {
+    color: white;
+    padding-left: 40px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+  }

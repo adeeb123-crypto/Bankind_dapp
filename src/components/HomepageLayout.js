@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import { InView } from 'react-intersection-observer'
 import { Link } from 'react-router-dom'
 import Banks from './Banks'
+import "./homepagelayout.css";
 
 import { useNavigate } from 'react-router-dom';
 import {
@@ -129,7 +130,7 @@ class DesktopContainer extends Component {
                                 <Menu.Item as={Link} to='/banking'>Banking Services</Menu.Item>
                                 <Menu.Item position='right'>
 
-                                    <Button as='a' inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }} onClick={async function requestAccount() {
+                                    <Button as='a' inverted={!fixed} primary style={{ marginLeft: '0.5em' }} onClick={async function requestAccount() {
 
                                         console.log('Requesting account...');
                                         if (window.ethereum) {

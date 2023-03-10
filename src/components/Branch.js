@@ -53,22 +53,18 @@ function Branch() {
 
   function handleClickEventForex() {
     if (isActive == 2) {
-      setIsActive("")
-    }
-    else{
+      setIsActive("");
+    } else {
       setIsActive(2);
     }
-    
   }
 
   function handleClickEventLend() {
     if (isActive == 1) {
-      setIsActive("")
-    }
-    else{
+      setIsActive("");
+    } else {
       setIsActive(1);
     }
-    
   }
 
   useEffect(() => {
@@ -1111,7 +1107,7 @@ function Branch() {
         </Button>
       </Form>
       <Divider />
-      <div className="table_branch">
+      <div>
         <Table>
           <Table.Header>
             <Table.Row>
@@ -1152,11 +1148,10 @@ function Branch() {
               onClick={handleClickEventForex}
               className="accordian_title_branch"
             >
-              <Icon className="icon_branch" name="dropdown" />
-              <Header.Content className="header_content_branch">
+              <Icon name="dropdown" />
                 Forex
-              </Header.Content>
             </Accordion.Title>
+            <Divider horizontal/>
             <Accordion.Content active={isActive === 2}>
               <Header as="h2" icon textAlign="center">
                 <Icon
@@ -1179,7 +1174,7 @@ function Branch() {
               <Header as="h2" icon textAlign="center">
                 {/* <Header.Content>Forex Details</Header.Content> */}
               </Header>
-              <Divider />
+              <Divider horizontal />
               <div>
                 <Card.Group centered>
                   {arrayDataForexDet.length > 0 &&
@@ -1316,6 +1311,8 @@ function Branch() {
                     })}
                 </Table.Body> */}
               {/* </Table> */}
+
+              
             </Accordion.Content>
             <Accordion.Title
               active={isActive === 1}
@@ -1323,11 +1320,9 @@ function Branch() {
               onClick={handleClickEventLend}
               className="accordian_title_branch"
             >
-              <Icon className="icon_branch" name="dropdown" />
-
-              <Header.Content className="header_content_branch">
+              <Icon  name="dropdown" />
                 Lending
-              </Header.Content>
+
             </Accordion.Title>
             <Accordion.Content active={isActive === 1}>
               <Header as="h2" icon textAlign="center">
@@ -1372,9 +1367,15 @@ function Branch() {
                           <Card.Description>
                             Interest Rate {10} %
                           </Card.Description>
-                          <Button basic color="green" onClick={processLoan}>
-                            Approve
-                          </Button>
+                          {data.isDone ? (
+                            <Button color="green">
+                              Approved
+                            </Button>
+                          ) : (
+                            <Button basic color="green" onClick={processLoan}>
+                              Approve
+                            </Button>
+                          )}
                         </Card.Content>
                       </Card>
                     );
@@ -1469,8 +1470,12 @@ function Branch() {
                       );
                     })}
                 </Table.Body> */}
+                
             </Accordion.Content>
           </Accordion>
+          <Divider horizontal/>
+          <Divider horizontal/>
+          <Divider horizontal/>
         </div>
       </div>
     </div>

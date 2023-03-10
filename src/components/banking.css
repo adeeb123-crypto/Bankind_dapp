@@ -13,8 +13,48 @@
   }
 
 
-  .ui.div.banking_footer{
+  /* .ui.div.banking_footer{
     padding-left: 0px !important;
     padding-right: 0px !important;
     background-color: blue;
+  } */
+
+  /* .ui.vertical.segment.banking_footer{
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #393053;
+  } */
+
+  .ui.inverted.segment.banking_footer{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    background-color: #393053;
+  }
+
+  .ui.black.table{
+    background-color: #393053;
+    border-radius: 20px;
+  }
+
+  .ui.form{
+    background-color: #393053;
+    padding-left: 55px ;
+    padding-right: 55px;
+    padding-bottom: 15px;
+    border-radius: 40px;
+    padding-top: 10px;
+  } 
+
+  .ui.form .field>label{
+    color: white;
+  }
+
+  .ui.secondary.button.button_banking{
+    background-color: white;
+    color: gray;
+    margin-top: 5px;
+  }
+
+  .ui.table td {
+    color: white;
   }

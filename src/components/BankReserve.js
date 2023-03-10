@@ -171,9 +171,10 @@ function BankReserve() {
         <Button type="submit" onClick={addbank}>
           Submit
         </Button>
-        <Divider/>
+       
       </Form>
-
+      <Divider horizontal/>
+      <Divider horizontal/>
       <div>
         <Table color="black" key={colors} >
           <Table.Header>

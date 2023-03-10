@@ -644,7 +644,7 @@ function Banking() {
 
         if (IDByAddress.bankId == 0) {
           setTokenSymbol("EUR");
-          setClientName("Europe Client")
+          setClientName("Europe Client");
 
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
@@ -667,7 +667,7 @@ function Banking() {
             )
             .call();
 
-            console.log("positionDetails",positionDetails);
+          console.log("positionDetails", positionDetails);
 
           let tmp_data = arrayDataloanDet;
           tmp_data.push(positionDetails);
@@ -679,7 +679,7 @@ function Banking() {
           console.log("arrayDataloan:", arrayDataloan[0].bank);
         } else {
           setTokenSymbol("USD");
-          setClientName("USD Client")
+          setClientName("USD Client");
 
           let IDByAddress = await callContract.methods
             .idOfAddress(address)
@@ -723,7 +723,12 @@ function Banking() {
         {isconnected ? (
           <></>
         ) : (
-          <Button className="icon_banking" floated="right" secondary onClick={giveDetails}>
+          <Button
+            className="button_banking"
+            floated="right"
+            secondary
+            onClick={giveDetails}
+          >
             Connect
           </Button>
         )}
@@ -761,15 +766,13 @@ function Banking() {
           <></>
         )}
       </div>
-      <Divider />
+      <Divider horizontal/>
 
       <div>
         <Header as="h2" icon textAlign="center">
           <Icon className="icon_banking" name="money" circular />
-          <Header.Content className="icon_banking" 
-          >Forex </Header.Content>
+          <Header.Content className="icon_banking">Forex </Header.Content>
         </Header>
-
       </div>
 
       <Form unstackable>
@@ -799,7 +802,9 @@ function Banking() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Header.Content className="header_content_forex">Forex Statement </Header.Content>
+          <Header.Content className="header_content_forex">
+            Forex Statement{" "}
+          </Header.Content>
         </Header>
 
         <Table color="black" key={colors}>
@@ -825,15 +830,24 @@ function Banking() {
                     <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
                     <Table.Cell>{data.reqId}</Table.Cell>
                     <Table.Cell>
-                      {data.isDepositedToBranch ?  <Icon color="green" name="checkmark" size="large" /> :  <Icon color="red" name="close" size="large" />}
+                      {data.isDepositedToBranch ? (
+                        <Icon color="green" name="checkmark" size="large" />
+                      ) : (
+                        <Icon color="red" name="close" size="large" />
+                      )}
                     </Table.Cell>
-                    <Table.Cell>{data.isDone ? <Icon color="green" name="checkmark" size="large" /> :  <Icon color="red" name="close" size="large" />}</Table.Cell>
+                    <Table.Cell>
+                      {data.isDone ? (
+                        <Icon color="green" name="checkmark" size="large" />
+                      ) : (
+                        <Icon color="red" name="close" size="large" />
+                      )}
+                    </Table.Cell>
                   </Table.Row>
                 );
               })}
 
             {/* false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result  */}
-
           </Table.Body>
         </Table>
       </div>
@@ -841,10 +855,15 @@ function Banking() {
 
       <div>
         <Header as="h2" icon textAlign="center">
-          <Icon className="header_content_forex" name="handshake outline" circular />
-          <Header.Content className="header_content_forex">Lending </Header.Content>
+          <Icon
+            className="header_content_forex"
+            name="handshake outline"
+            circular
+          />
+          <Header.Content className="header_content_forex">
+            Lending{" "}
+          </Header.Content>
         </Header>
-
       </div>
 
       <Form unstackable>
@@ -863,15 +882,18 @@ function Banking() {
         <Button type="submit" onClick={borrow}>
           Submit
         </Button>
-        <Divider horizontal />
-      <Divider horizontal/>
-        <Divider horizontal/>
-        <Divider horizontal/>
-        <Divider horizontal/>
+
       </Form>
+      <Divider horizontal />
+        <Divider horizontal />
+        <Divider horizontal />
+        <Divider horizontal />
+
       <div>
         <Header as="h2" icon textAlign="center">
-          <Header.Content className="header_content_forex">Lending Statement </Header.Content>
+          <Header.Content className="header_content_forex">
+            Lending Statement{" "}
+          </Header.Content>
         </Header>
 
         <Table color="black" key={colors}>
@@ -920,19 +942,24 @@ function Banking() {
         </Table>
       </div>
       <Divider horizontal />
-      <Divider horizontal/>
-      <Divider horizontal/>
       <Divider horizontal />
-      <Divider horizontal/>
-      <Divider horizontal/>
       <Divider horizontal />
-      <Divider horizontal/>
-      <Divider horizontal/>
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
 
-      <div className="banking_footer">
-        <Divider horizontal/>
+      <div>
+        <Divider horizontal />
 
-        <Segment inverted vertical style={{ padding: "0em 0em" }}>
+        <Segment
+          className="banking_footer"
+          inverted
+          vertical
+          style={{ padding: "0em 0em" }}
+        >
           <Container>
             <Grid divided inverted stackable>
               <Grid.Row>
