@@ -58,3 +58,21 @@
   .ui.table td {
     color: white;
   }
+
+  /* div{
+    background-color:393053 ;
+  } */
+
+  .ui.tab.active, .ui.tab.open{
+    background-color: #18122b ;
+  }
+
+  .ui.menu:first-child{
+    background-color: #393053;
+    color: white;
+    border-radius: 20px;
+  }
+
+  .ui.menu .active.item{
+    color: white;
+  }
