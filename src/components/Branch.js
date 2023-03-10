@@ -18,7 +18,7 @@ import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Card } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import "./branch.css"
+import "./branch.css";
 
 const colors = ["#393053"];
 
@@ -51,19 +51,24 @@ function Branch() {
 
   const ref = useRef(null);
 
-
-
   function handleClickEventForex() {
-    setIsActive(0);
-    return;
-    const new_index = "";
-    if (isActive === 0) {
-      setIsActive("");
+    if (isActive == 2) {
+      setIsActive("")
     }
+    else{
+      setIsActive(2);
+    }
+    
   }
 
   function handleClickEventLend() {
-    setIsActive(1);
+    if (isActive == 1) {
+      setIsActive("")
+    }
+    else{
+      setIsActive(1);
+    }
+    
   }
 
   useEffect(() => {
@@ -294,10 +299,9 @@ function Branch() {
             ) //Needs Debuging//DOne!!
             .send({ from: address, gas: 1000000 });
 
-            let ReqDetailsClient11 = await callContract.methods
+          let ReqDetailsClient11 = await callContract.methods
             .requestDetails(forexDetails.byClient, forexDetails.reqId)
             .call();
-
 
           let tmp_data = arrayDataForexDet;
           tmp_data.push(ReqDetailsClient11);
@@ -338,10 +342,9 @@ function Branch() {
             )
             .send({ from: address, gas: 1000000 });
 
-            let ReqDetailsClient11 = await callContract.methods
+          let ReqDetailsClient11 = await callContract.methods
             .requestDetails(forexDetails.byClient, forexDetails.reqId)
             .call();
-
 
           console.log("ReqDetailsAddress :", forexDetails);
           console.log("ReqDetailsClient1 :", ReqDetailsClient1);
@@ -1040,7 +1043,10 @@ function Branch() {
       <div>
         <Header as="h2" icon textAlign="center">
           <Icon className="icon_branch" name="user circle outline" circular />
-          <Header.Content className="header_content_branch"> Branch</Header.Content>
+          <Header.Content className="header_content_branch">
+            {" "}
+            Branch
+          </Header.Content>
         </Header>
         {/* <Image
                     centered
@@ -1051,9 +1057,9 @@ function Branch() {
       <div>
         {" "}
         <Card.Group centered className="card_connect_branch">
-          <Card >
-            <Card.Content >
-              <Card.Meta >Branch ID: {detailsbranchid}</Card.Meta>
+          <Card>
+            <Card.Content>
+              <Card.Meta>Branch ID: {detailsbranchid}</Card.Meta>
               <Card.Description>Branch: {branchname}</Card.Description>
               <Card.Description>
                 Balance: {balancebranch / 10e7} {tokenSymbol}
@@ -1073,7 +1079,7 @@ function Branch() {
           </Card>
         </Card.Group>
       </div>
-      <Divider/>
+      <Divider />
 
       <Form unstackable>
         <Form.Group widths={3}>
@@ -1106,7 +1112,7 @@ function Branch() {
       </Form>
       <Divider />
       <div className="table_branch">
-        <Table >
+        <Table>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Client Address</Table.HeaderCell>
@@ -1138,21 +1144,30 @@ function Branch() {
       </div>
 
       <div>
-        <div >
+        <div>
           <Accordion>
             <Accordion.Title
-              active={isActive === 0}
-              index={0}
+              active={isActive === 2}
+              index={2}
               onClick={handleClickEventForex}
               className="accordian_title_branch"
             >
-              <Icon name="dropdown" />
-              Forex
+              <Icon className="icon_branch" name="dropdown" />
+              <Header.Content className="header_content_branch">
+                Forex
+              </Header.Content>
             </Accordion.Title>
-            <Accordion.Content active={isActive === 0}>
+            <Accordion.Content active={isActive === 2}>
               <Header as="h2" icon textAlign="center">
-                <Icon className="icon_branch" name="wait" circular size="tiny" />
-                <Header.Content className="header_content_branch">Pending Forex Requests</Header.Content>
+                <Icon
+                  className="icon_branch"
+                  name="wait"
+                  circular
+                  size="tiny"
+                />
+                <Header.Content className="header_content_branch">
+                  Pending Forex Requests
+                </Header.Content>
               </Header>
               <Button primary onClick={checkForexRequest}>
                 View Requests
@@ -1190,7 +1205,11 @@ function Branch() {
                             <Card.Description>
                               EUR/USD={data.amountInUsd / data.amountInEur}
                             </Card.Description>
-                            <Button basic color="green" onClick={processForexRequestBranch}>
+                            <Button
+                              basic
+                              color="green"
+                              onClick={processForexRequestBranch}
+                            >
                               Approve
                             </Button>
                           </Card.Content>
@@ -1201,7 +1220,7 @@ function Branch() {
               </div>
 
               {/* <Table color="black" key={colors} inverted> */}
-                {/* <Table.Header>
+              {/* <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>To Client Address</Table.HeaderCell>
                     <Table.HeaderCell>Amount USD</Table.HeaderCell>
@@ -1213,7 +1232,7 @@ function Branch() {
                   </Table.Row>
                 </Table.Header> */}
 
-                {/* <div>
+              {/* <div>
                   <Grid reversed="computer" columns="equal">
                     <Grid.Row color="black">
                       <Grid.Column>
@@ -1254,7 +1273,7 @@ function Branch() {
                   </Grid>
                 </div> */}
 
-                {/* <Table.Body>
+              {/* <Table.Body>
                   {arrayDataForexDet.length > 0 &&
                     arrayDataForexDet.map((data, index) => {
                       // console.log(data[index]);
@@ -1298,19 +1317,24 @@ function Branch() {
                 </Table.Body> */}
               {/* </Table> */}
             </Accordion.Content>
-            <Accordion.Title 
+            <Accordion.Title
               active={isActive === 1}
               index={1}
               onClick={handleClickEventLend}
               className="accordian_title_branch"
             >
-              <Icon name="dropdown" />
-              Lending
+              <Icon className="icon_branch" name="dropdown" />
+
+              <Header.Content className="header_content_branch">
+                Lending
+              </Header.Content>
             </Accordion.Title>
             <Accordion.Content active={isActive === 1}>
               <Header as="h2" icon textAlign="center">
                 <Icon className="icon_branch" name="wait" circular />
-                <Header.Content className="header_content_branch">Pending Borrow Requests</Header.Content>
+                <Header.Content className="header_content_branch">
+                  Pending Borrow Requests
+                </Header.Content>
               </Header>
               <Button primary onClick={checkBorrowRequest}>
                 View Requests
@@ -1319,44 +1343,44 @@ function Branch() {
                 View History
               </Button>
               <Header as="h2" icon textAlign="center"></Header>
-          
-                <Card.Group centered>
-                  {arrayDataBorrowDispDet.length > 0 &&
-                    arrayDataBorrowDispDet.map((data, index) => {
-                      return (
-                        <Card>
-                          <Card.Content>
-                            <Icon name="handshake outline" circular />
-                            <Card.Header>
-                              Borrow Request: {data.positionId}{" "}
-                            </Card.Header>
-                            <Card.Meta>
-                              Amount {data.amountBorrowed / 10e7} USD
-                            </Card.Meta>
-                            <Card.Meta>
-                              Status{" "}
-                              {data.isDone ? (
-                                <Icon
-                                  color="green"
-                                  name="checkmark"
-                                  size="large"
-                                />
-                              ) : (
-                                <Icon color="red" name="close" size="large" />
-                              )}
-                            </Card.Meta>
-                            <Card.Description>
-                              Interest Rate {10} %
-                            </Card.Description>
-                            <Button basic color="green" onClick={processLoan}>
-                              Approve
-                            </Button>
-                          </Card.Content>
-                        </Card>
-                      );
-                    })}
-                </Card.Group>
-                {/* <Table.Header>
+
+              <Card.Group centered>
+                {arrayDataBorrowDispDet.length > 0 &&
+                  arrayDataBorrowDispDet.map((data, index) => {
+                    return (
+                      <Card>
+                        <Card.Content>
+                          <Icon name="handshake outline" circular />
+                          <Card.Header>
+                            Borrow Request: {data.positionId}{" "}
+                          </Card.Header>
+                          <Card.Meta>
+                            Amount {data.amountBorrowed / 10e7} USD
+                          </Card.Meta>
+                          <Card.Meta>
+                            Status{" "}
+                            {data.isDone ? (
+                              <Icon
+                                color="green"
+                                name="checkmark"
+                                size="large"
+                              />
+                            ) : (
+                              <Icon color="red" name="close" size="large" />
+                            )}
+                          </Card.Meta>
+                          <Card.Description>
+                            Interest Rate {10} %
+                          </Card.Description>
+                          <Button basic color="green" onClick={processLoan}>
+                            Approve
+                          </Button>
+                        </Card.Content>
+                      </Card>
+                    );
+                  })}
+              </Card.Group>
+              {/* <Table.Header>
                   <Table.Row>
                     <Table.HeaderCell>Client ID</Table.HeaderCell>
                     <Table.HeaderCell>Amount Borrowed</Table.HeaderCell>
@@ -1367,7 +1391,7 @@ function Branch() {
                   </Table.Row>
                 </Table.Header> */}
 
-                {/* <div>
+              {/* <div>
                   <Grid reversed="computer" columns="equal">
                     <Grid.Row color="black">
                       <Grid.Column>
@@ -1407,7 +1431,7 @@ function Branch() {
                     </Grid.Row>
                   </Grid>
                 </div> */}
-                {/* <Table.Body>
+              {/* <Table.Body>
                   {arrayDataBorrowDispDet.length > 0 &&
                     arrayDataBorrowDispDet.map((data, index) => {
                       // console.log(data[index]);
@@ -1445,7 +1469,6 @@ function Branch() {
                       );
                     })}
                 </Table.Body> */}
-             
             </Accordion.Content>
           </Accordion>
         </div>
