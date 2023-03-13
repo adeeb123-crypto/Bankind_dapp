@@ -34,6 +34,8 @@ const { MediaContextProvider, Media } = createMedia({
 
 const HomepageHeading = ({ mobile }) => (
   <Container text>
+
+
     <Header
       as="h1"
       content="Your -Decentralized Banking System"
@@ -89,14 +91,41 @@ HomepageHeading.propTypes = {
 //  }
 
 class DesktopContainer extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      isConnected: false,
+      metaAccount: [],
+    };
+    this.handleClick = this.handleClick.bind(this);
   }
+
+  async handleClick() {
+    console.log("Requesting account...");
+    if (window.ethereum) {
+      console.log("detected");
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        console.log(accounts[0]);
+        this.setState({ isConnected: true });
+        this.setState({ metaAccount: accounts });
+      } catch (error) {
+        console.log("Error connecting...", error);
+        this.setState({ isConnected: false });
+      }
+    } else {
+      console.log("Meta Mask not detected");
+    }
+  }
+
   state = {};
 
   toggleFixedMenu = (inView) => this.setState({ fixed: !inView });
 
   render() {
+    const { isConnected } = this.state;
     const { children } = this.props;
     const { fixed } = this.state;
     return (
@@ -129,30 +158,21 @@ class DesktopContainer extends Component {
                   Banking Services
                 </Menu.Item>
                 <Menu.Item position="right">
-                  <Button
-                    as="a"
-                    inverted={!fixed}
-                    primary
-                    style={{ marginLeft: "0.5em" }}
-                    onClick={async function requestAccount() {
-                      console.log("Requesting account...");
-                      if (window.ethereum) {
-                        console.log("detected");
-                        try {
-                          const accounts = await window.ethereum.request({
-                            method: "eth_requestAccounts",
-                          });
-                          console.log(accounts[0]);
-                        } catch (error) {
-                          console.log("Error connecting...");
-                        }
-                      } else {
-                        console.log("Meta Mask not detected");
-                      }
-                    }}
-                  >
-                    Connect Wallet
-                  </Button>
+                  {isConnected ? (
+                    <Button color="blue" style={{ marginLeft: "0.5em" }}>
+                      Connected
+                    </Button>
+                  ) : (
+                    <Button
+                      as="a"
+                      inverted={!fixed}
+                      primary
+                      style={{ marginLeft: "0.5em" }}
+                      onClick={this.handleClick}
+                    >
+                      Connect Wallet
+                    </Button>
+                  )}
                 </Menu.Item>
               </Container>
             </Menu>
@@ -257,7 +277,6 @@ ResponsiveContainer.propTypes = {
 
 const HomepageLayout = () => (
   <ResponsiveContainer>
-
     <Segment style={{ padding: "8em 0em" }} vertical>
       <Grid container stackable verticalAlign="middle">
         {/* <Grid.Row> */}
@@ -296,7 +315,6 @@ const HomepageLayout = () => (
     </Segment>
 
     <Segment style={{ padding: "0em" }} vertical>
-        
       <Grid celled="internally" columns="equal" stackable>
         <Grid.Row textAlign="center">
           {/* <Grid.Column style={{ paddingBottom: "5em", paddingTop: "5em" }}>

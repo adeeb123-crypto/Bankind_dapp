@@ -47,6 +47,8 @@ function Branch() {
   const [eurBranch, setEurBranch] = useState("");
   const [usdBranch, setUsdBranch] = useState("");
   const [branchname, setBranchName] = useState("");
+  const [counterEUR, setCounterEUR] = useState(0);
+  const [counterUSD, setCounterUSD] = useState(0);
   const navigate = useNavigate();
 
   const ref = useRef(null);
@@ -146,77 +148,92 @@ function Branch() {
           .idOfAddress(address)
           .call();
 
+        console.log("Id adressess", IDByAddress);
+
         if (IDByAddress.bankId == 0) {
           setTokenSymbol("EUR");
+
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, 100000000000)
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseEcb);
-          let response = await callContract.methods
-            .addClient(
-              IDByAddress.bankId,
-              branchid,
-              clientaddress,
-              amount * 100000000,
-              "EUR"
-            )
-            .send({ from: address, gas: 1000000 });
-          console.log(response);
-          let clientid1 = await callContract.methods
-            .clientCount(IDByAddress.bankId, branchid)
-            .call();
 
-          let clientDetails1 = await callContract.methods
-            .clients(IDByAddress.bankId, clientid1 - 1)
-            .call();
-          console.log("clientid1:", clientid1);
-          console.log("clientDetails1:", clientDetails1);
+          if (IDByAddress.bankId == 0 && branchid == "Europe Branch") {
+            let response = await callContract.methods
+              .addClient(
+                IDByAddress.bankId,
+                counterEUR,
+                clientaddress,
+                amount * 100000000,
+                "EUR"
+              )
+              .send({ from: address, gas: 1000000 });
+            console.log(response);
 
-          let tmp_data = arrayData;
-          tmp_data.push(clientDetails1);
-          console.log(tmp_data);
-          setArrayData(tmp_data);
-          window.localStorage.setItem("DataC", JSON.stringify(tmp_data));
-          console.log("arrayData:", arrayData);
-          console.log("arrayData:", arrayData[0].amount);
-          console.log("arrayData:", arrayData[0].client);
+            let clientid1 = await callContract.methods
+              .clientCount(IDByAddress.bankId, counterEUR)
+              .call();
+            setCounterEUR(counterEUR + 1);
+
+            let clientDetails1 = await callContract.methods
+              .clients(IDByAddress.bankId, clientid1 - 1)
+              .call();
+            console.log("clientid1:", clientid1);
+            console.log("clientDetails1:", clientDetails1);
+
+            let tmp_data = arrayData;
+            tmp_data.push(clientDetails1);
+            console.log(tmp_data);
+            setArrayData(tmp_data);
+            window.localStorage.setItem("DataC", JSON.stringify(tmp_data));
+            console.log("arrayData:", arrayData);
+            console.log("arrayData:", arrayData[0].amount);
+            console.log("arrayData:", arrayData[0].client);
+          } else {
+            console.log("Error In params");
+          }
         } else {
           setTokenSymbol("USD");
           let responseFed = await callContractFED.methods
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
 
-          console.log("Response :", responseFed);
-          let response = await callContract.methods
-            .addClient(
-              IDByAddress.bankId,
-              branchid,
-              clientaddress,
-              amount * 100000000,
-              "USD"
-            )
-            .send({ from: address, gas: 1000000 });
-          console.log(response);
+          if (IDByAddress.bankId == 1 && branchid == "USD Branch") {
+            let response = await callContract.methods
+              .addClient(
+                IDByAddress.bankId,
+                counterUSD,
+                clientaddress,
+                amount * 100000000,
+                "USD"
+              )
+              .send({ from: address, gas: 1000000 });
+            console.log(response);
+            console.log("Response :", responseFed);
 
-          let clientid2 = await callContract.methods
-            .clientCount(IDByAddress.bankId, branchid)
-            .call();
+            let clientid2 = await callContract.methods
+              .clientCount(IDByAddress.bankId, counterUSD)
+              .call();
+            setCounterUSD(counterUSD + 1);
 
-          let clientDetails2 = await callContract.methods
-            .clients(IDByAddress.bankId, clientid2 - 1)
-            .call();
-          console.log("clientid1:", clientid2);
-          console.log("clientDetails1:", clientDetails2);
+            let clientDetails2 = await callContract.methods
+              .clients(IDByAddress.bankId, clientid2 - 1)
+              .call();
+            console.log("clientid1:", clientid2);
+            console.log("clientDetails1:", clientDetails2);
 
-          let tmp_data = arrayData;
-          tmp_data.push(clientDetails2);
-          console.log(tmp_data);
-          setArrayData(tmp_data);
-          window.localStorage.setItem("DataC", JSON.stringify(tmp_data));
-          console.log("arrayData:", arrayData);
-          console.log("arrayData:", arrayData[0].amount);
-          console.log("arrayData:", arrayData[0].client);
+            let tmp_data = arrayData;
+            tmp_data.push(clientDetails2);
+            console.log(tmp_data);
+            setArrayData(tmp_data);
+            window.localStorage.setItem("DataC", JSON.stringify(tmp_data));
+            console.log("arrayData:", arrayData);
+            console.log("arrayData:", arrayData[0].amount);
+            console.log("arrayData:", arrayData[0].client);
+          }
         }
+      } else {
+        console.log("Error In params");
       }
     } catch (error) {
       console.log(Error);
@@ -1055,7 +1072,6 @@ function Branch() {
         <Card.Group centered className="card_connect_branch">
           <Card>
             <Card.Content>
-              <Card.Meta>Branch ID: {detailsbranchid}</Card.Meta>
               <Card.Description>Branch: {branchname}</Card.Description>
               <Card.Description>
                 Balance: {balancebranch / 10e7} {tokenSymbol}
@@ -1080,9 +1096,9 @@ function Branch() {
       <Form unstackable>
         <Form.Group widths={3}>
           <Form.Input
-            label="Branch ID"
-            placeholder="0."
-            type="number"
+            label="Branch Name"
+            placeholder="Europe Branch..."
+            type="text"
             value={branchid}
             onChange={(e) => setBranchID(e.target.value)}
           />
@@ -1113,8 +1129,8 @@ function Branch() {
             <Table.Row>
               <Table.HeaderCell>Client Address</Table.HeaderCell>
               <Table.HeaderCell>Amount</Table.HeaderCell>
-              <Table.HeaderCell>BankId</Table.HeaderCell>
-              <Table.HeaderCell>Client ID</Table.HeaderCell>
+              <Table.HeaderCell>Bank Name</Table.HeaderCell>
+              <Table.HeaderCell>Client Name</Table.HeaderCell>
               <Table.HeaderCell>Approved</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -1128,8 +1144,14 @@ function Branch() {
                     <Table.Cell>
                       {data.amount / 10e7} {data.tokenSymbol}
                     </Table.Cell>
-                    <Table.Cell>{data.bankId}</Table.Cell>
-                    <Table.Cell>{data.branchId}</Table.Cell>
+                    <Table.Cell>
+                      {data.bankId == 0 ? "Europe Bank" : "USD Bank"}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {data.bankId == 0 && data.clientId
+                        ? "Europe Client"
+                        : "USD Client"}
+                    </Table.Cell>
                     <Table.Cell>True</Table.Cell>
                   </Table.Row>
                 );
@@ -1149,9 +1171,9 @@ function Branch() {
               className="accordian_title_branch"
             >
               <Icon name="dropdown" />
-                Forex
+              Forex
             </Accordion.Title>
-            <Divider horizontal/>
+            <Divider horizontal />
             <Accordion.Content active={isActive === 2}>
               <Header as="h2" icon textAlign="center">
                 <Icon
@@ -1311,8 +1333,6 @@ function Branch() {
                     })}
                 </Table.Body> */}
               {/* </Table> */}
-
-              
             </Accordion.Content>
             <Accordion.Title
               active={isActive === 1}
@@ -1320,9 +1340,8 @@ function Branch() {
               onClick={handleClickEventLend}
               className="accordian_title_branch"
             >
-              <Icon  name="dropdown" />
-                Lending
-
+              <Icon name="dropdown" />
+              Lending
             </Accordion.Title>
             <Accordion.Content active={isActive === 1}>
               <Header as="h2" icon textAlign="center">
@@ -1368,9 +1387,7 @@ function Branch() {
                             Interest Rate {10} %
                           </Card.Description>
                           {data.isDone ? (
-                            <Button color="green">
-                              Approved
-                            </Button>
+                            <Button color="green">Approved</Button>
                           ) : (
                             <Button basic color="green" onClick={processLoan}>
                               Approve
@@ -1470,12 +1487,11 @@ function Branch() {
                       );
                     })}
                 </Table.Body> */}
-                
             </Accordion.Content>
           </Accordion>
-          <Divider horizontal/>
-          <Divider horizontal/>
-          <Divider horizontal/>
+          <Divider horizontal />
+          <Divider horizontal />
+          <Divider horizontal />
         </div>
       </div>
     </div>

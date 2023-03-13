@@ -6,9 +6,7 @@ import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Table } from "semantic-ui-react";
-import "./bankreserve.css"
-
-
+import "./bankreserve.css";
 
 const colors = ["black"];
 
@@ -70,20 +68,15 @@ function BankReserve() {
         let address = web3eth.givenProvider.selectedAddress;
         console.log("address", address);
 
-        if (centralbankid == 0) {
-          setTokenSymbol("");
-
+        if (centralbankid == "ECB") {
+          setTokenSymbol("")
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
           setTokenSymbol("EUR");
+
           let response = await callContract.methods
-            .addBank(
-              bankaddress,
-              "EUR",
-              centralbankid,
-              amount * 100000000
-            )
+            .addBank(bankaddress, "EUR", 0, amount * 100000000)
             .send({ from: address, gas: 1000000 });
 
           let responseP1 = await callContract.methods.banks(0).call();
@@ -98,6 +91,7 @@ function BankReserve() {
           console.log("arrayData:", arrayData);
           console.log("arrayData:", arrayData[0].amount);
           console.log("arrayData:", arrayData[0].bank);
+
         } else {
           setTokenSymbol("");
           setTokenSymbol("USD");
@@ -105,13 +99,9 @@ function BankReserve() {
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseFed);
+
           let response = await callContract.methods
-            .addBank(
-              bankaddress,
-              "USD",
-              centralbankid,
-              amount * 100000000
-            )
+            .addBank(bankaddress, "USD", 1, amount * 100000000)
             .send({ from: address, gas: 1000000 });
           let responseP2 = await callContract.methods.banks(1).call();
 
@@ -138,9 +128,11 @@ function BankReserve() {
       <div>
         <Header as="h2" icon textAlign="center">
           <Icon className="icon_bankreserve" name="money" circular />
-          <Header.Content className="header_content_bankreserve"> World Token Reserve</Header.Content>
+          <Header.Content className="header_content_bankreserve">
+            {" "}
+            World Token Reserve
+          </Header.Content>
         </Header>
-
       </div>
       <Form unstackable>
         <Form.Group widths={2}>
@@ -159,8 +151,8 @@ function BankReserve() {
             onChange={(e) => setAmount(e.target.value)}
           />
           <Form.Input
-            label="Central Bank ID"
-            placeholder="0"
+            label="Central Bank"
+            placeholder="ECB or USD"
             type="text"
             value={centralbankid}
             onChange={(e) => setCentralBankID(e.target.value)}
@@ -171,12 +163,11 @@ function BankReserve() {
         <Button type="submit" onClick={addbank}>
           Submit
         </Button>
-       
       </Form>
-      <Divider horizontal/>
-      <Divider horizontal/>
+      <Divider horizontal />
+      <Divider horizontal />
       <div>
-        <Table color="black" key={colors} >
+        <Table color="black" key={colors}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Bank Address</Table.HeaderCell>

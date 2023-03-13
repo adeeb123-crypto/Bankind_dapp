@@ -43,6 +43,8 @@ function Banking() {
   const [isconnected, setIsConnected] = useState(false);
   const [isExit, setIsExit] = useState(false);
   const [clientName, setClientName] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [checkClient, setCheckClient] = useState("");
 
   useEffect(() => {
     // someForexDets()
@@ -70,7 +72,63 @@ function Banking() {
       temp_dataLoan_Det = JSON.parse(temp_dataLoan_Det);
       setArrayDataLoanDet(temp_dataLoan_Det);
     }
+
+    getAddress();
+
+    // window.localStorage.clear();
   }, [arrayDataF, arrayDataBr, arrayDataloan]);
+
+  async function getAddress() {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.enable();
+        console.log("accounts", accounts);
+        const provider = await new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        const signer = await provider.getSigner();
+        // console.log("Signer", signer);
+        const address = await signer.getAddress();
+        console.log(address);
+      } else {
+        console.log("MemtaMask Not Installed Maen");
+      }
+      const web3eth = new Web3(Web3.givenProvider);
+
+      const callContract = new web3eth.eth.Contract(
+        ABIbnksys,
+        contractAddressbnksys
+      );
+      if (web3eth.givenProvider) {
+        // console.log("Hello Provider Here", web3eth.givenProvider);
+        let address = web3eth.givenProvider.selectedAddress;
+        console.log("address", address);
+
+        let numOfRequest = await callContract.methods
+          .numOfRequest(address)
+          .call();
+
+        let ReqDetailsClient1 = await callContract.methods
+          .requestDetails(address, numOfRequest - 1)
+          .call();
+
+        if (
+          "0x64ad7de63C4ed0fBEF948DC04574E781740ABF90" ==
+          "0x64ad7de63C4ed0fBEF948DC04574E781740ABF90"
+        ) {
+          console.log("Do something");
+        } else {
+          window.alert("Not a Client, Please Change Account");
+          return;
+        }
+      }
+    } catch (error) {
+      console.log(Error);
+    }
+  }
 
   async function someForexDets() {
     try {
@@ -385,13 +443,21 @@ function Banking() {
           console.log("positionDetails:", positionDetails);
 
           let tmp_data = arrayDataBr;
+          console.log("Array DataBr:", arrayDataBr);
+          // tmp_data.pop(); Do we need to pop here as this is only setting the values once, meaning called only once
           tmp_data.push(positionDetails);
           console.log(tmp_data);
           setArrayDataBr(tmp_data);
           window.localStorage.setItem("DataBr", JSON.stringify(tmp_data));
-          console.log("arrayDataBr:", arrayDataBr);
-          console.log("arrayDataBr:", arrayDataBr[0].isClear);
-          console.log("arrayDataBr:", arrayDataBr[0].bank);
+          console.log(
+            "arradata bank:",
+            arrayDataBr[arrayDataBr.length - 1].bankId
+          );
+          if (arrayDataBr[arrayDataBr.length - 1].bankId == 0) {
+            setBankName("Europe Bank");
+          } else {
+            setBankName("USD Bank");
+          }
         } else {
           setTokenSymbol("USD");
 
@@ -420,12 +486,20 @@ function Banking() {
 
           // response = {addres: hhkujiiio, status: true, id:555, amount:8885454}
           let tmp_data = arrayDataBr;
+          console.log("Array DataBr:", arrayDataBr);
           tmp_data.push(positionDetails);
           console.log("tmp_data", tmp_data);
           setArrayDataBr(tmp_data);
           window.localStorage.setItem("DataBr", JSON.stringify(tmp_data));
-          console.log("arrayData:", arrayDataBr[0].amount);
-          console.log("arrayData:", arrayDataBr[0].bank);
+          console.log(
+            "arrayDataloan:",
+            arrayDataBr[arrayDataBr.length - 1].bankId
+          );
+          if (arrayDataBr[arrayDataBr.length - 1].bankId == 0) {
+            setBankName("Europe Bank");
+          } else {
+            setBankName("USD Bank");
+          }
         }
       }
     } catch (error) {
@@ -520,6 +594,8 @@ function Banking() {
             .call();
 
           let tmp_data_br = arrayDataBr;
+          console.log("Array DataBr:", arrayDataBr);
+          tmp_data_br.pop();
           tmp_data_br.push(positionDetails1);
           console.log(tmp_data_br);
           setArrayDataBr(tmp_data_br);
@@ -580,6 +656,8 @@ function Banking() {
             .call();
 
           let tmp_data_br = arrayDataBr;
+          console.log("Array DataBr:", arrayDataBr);
+          tmp_data_br.pop();
           tmp_data_br.push(positionDetails1);
           console.log(tmp_data_br);
           setArrayDataBr(tmp_data_br);
@@ -913,7 +991,11 @@ function Banking() {
                 </div>
                 <Form unstackable>
                   <Form.Group widths={2}>
-                    <Form.Input label="Branch ID" placeholder="0" type="text" />
+                    <Form.Input
+                      label="Branch Name"
+                      placeholder="0"
+                      type="text"
+                    />
                     <Form.Input
                       label="Amount"
                       placeholder="10..."
@@ -942,8 +1024,8 @@ function Banking() {
                     <Table.Header>
                       <Table.Row>
                         <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
-                        <Table.HeaderCell>Bank ID</Table.HeaderCell>
-                        <Table.HeaderCell>Client ID</Table.HeaderCell>
+                        <Table.HeaderCell>Bank Name</Table.HeaderCell>
+                        <Table.HeaderCell>Client Name</Table.HeaderCell>
                         <Table.HeaderCell>Position ID</Table.HeaderCell>
                         <Table.HeaderCell>Status</Table.HeaderCell>
                         <Table.HeaderCell>Clear Loan</Table.HeaderCell>
@@ -953,14 +1035,19 @@ function Banking() {
                     <Table.Body>
                       {arrayDataBr.length > 0 &&
                         arrayDataBr.map((data, index) => {
-                          console.log(data[index]);
                           return (
                             <Table.Row key={index}>
                               <Table.Cell>
                                 {data.amountBorrowed / 10e7}
                               </Table.Cell>
-                              <Table.Cell>{data.bankId}</Table.Cell>
-                              <Table.Cell>{data.clientId}</Table.Cell>
+                              <Table.Cell>
+                                {data.bankId == 0 ? "Europe Bank" : "USD Bank"}
+                              </Table.Cell>
+                              <Table.Cell>
+                                {data.bankId == 0 && data.clientId
+                                  ? "Europe Client"
+                                  : "USD Client"}
+                              </Table.Cell>
                               <Table.Cell>{data.positionId}</Table.Cell>
                               <Table.Cell>
                                 {data.isBorrowed ? "True" : "False"}
@@ -995,7 +1082,6 @@ function Banking() {
                 <Divider horizontal />
                 <Divider horizontal />
                 <Divider horizontal />
-             
               </Tab.Pane>
             ),
           },

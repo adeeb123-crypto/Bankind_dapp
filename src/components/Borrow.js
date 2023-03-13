@@ -13,12 +13,13 @@ import {
   Grid,
   Card,
   Accordion,
-  Menu
+  Menu,
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import "./borrow.css";
+import ReactPaginate from "react-paginate";
 const colors = ["black"];
 
 function Borrow() {
@@ -34,6 +35,11 @@ function Borrow() {
   const [arrayData, setArrayData] = useState([]);
   const [isActive, setIsActive] = useState("");
   const [date, setDate] = useState("");
+  const [pageNumber, setPageNumber] = useState(0);
+  // const [branchName, setBranchName] = useState("");
+
+  const displayDetails = 3;
+  const pageVisited = pageNumber * displayDetails;
 
   useEffect(() => {
     let temp_data_borrow = window.localStorage.getItem("Borrow_page");
@@ -52,6 +58,83 @@ function Borrow() {
       setIsActive(1);
     }
   }
+
+  const dispDets =
+    arrayData.length > 0 &&
+    arrayData
+      ?.slice(pageVisited, pageVisited + displayDetails)
+      .map((data, index) => {
+        return (
+          <Grid key={index} reversed="computer" columns="equal">
+            <Grid.Row color="white">
+              <Grid.Column>
+                Branch
+                <Grid.Column>
+                  {" "}
+                  {data.branchId == 0 && data.bankId == 1
+                    ? "Europe Branch"
+                    : "USD Branch"}
+                </Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                Expected amount %<Grid.Column>10397.475</Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                Amount Borrowed
+                <Grid.Column>{data?.amountBorrowed / 10e7}</Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                Last Updated
+                <Grid.Column>{date}</Grid.Column>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row color="white">
+              <Grid.Column>
+                Approve
+                <Grid.Column>
+                  {data?.isDone ? (
+                    <Icon color="green" name="checkmark" size="large" />
+                  ) : (
+                    <Icon color="red" name="close" size="large" />
+                  )}
+                </Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                Exit
+                <Grid.Column>
+                  {" "}
+                  {data?.isClear ? (
+                    <Icon color="green" name="checkmark" size="large" />
+                  ) : (
+                    <Icon color="red" name="close" size="large" />
+                  )}
+                </Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                Borrowed
+                <Grid.Column>
+                  {data?.isBorrowed ? (
+                    <Icon color="green" name="checkmark" size="large" />
+                  ) : (
+                    <Icon color="red" name="close" size="large" />
+                  )}
+                </Grid.Column>
+              </Grid.Column>
+              <Grid.Column>
+                cost
+                <Grid.Column>-</Grid.Column>
+              </Grid.Column>
+            </Grid.Row>
+            <Divider />
+          </Grid>
+        );
+      });
+
+  //arrayData?.slice(pageVisited, pageVisited + displayDetails).map()
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   async function checkBorrowRequest() {
     try {
@@ -113,6 +196,7 @@ function Borrow() {
           console.log("positionDetails1", positionDetails1);
 
           let tmp_data = arrayData;
+          // tmp_data.pop();
           tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
           window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
@@ -141,11 +225,12 @@ function Borrow() {
           console.log("positionDetails1", positionDetails1);
 
           let tmp_data = arrayData;
+          // tmp_data.pop();
           tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
           console.log("arrydata", arrayData);
           window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
-          const unixTimestamp = arrayData[0].timeStamp;
+          const unixTimestamp = arrayData[arrayData.length - 1].timeStamp;
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
           console.log("Humandate:", humanDate);
@@ -180,207 +265,105 @@ function Borrow() {
             </Header.Content>
           </Accordion.Title>
           <Accordion.Content active={isActive === 1}>
-            {/* <Header as="h2" icon textAlign="center">
-                <Icon name="wait" circular size="tiny" />
-                <Header.Content>Pending Forex Requests</Header.Content>
-              </Header> */}
-            {/* <Button secondary onClick={checkForexRequest}>
-                View Requests
-              </Button> */}
             <Divider horizontal />
-            {/* <div>
-                <Card.Group centered>
-                  {arrayDataForexDet.length > 0 &&
-                    arrayDataForexDet.map((data, index) => {
-                      return (
-                        <Card>
-                          <Card.Content>
-                            <Icon
-                              name="money bill alternate outline"
-                              circular
-                            />
-                            <Card.Header>
-                              Forex Request: {data.reqId}{" "}
-                            </Card.Header>
-                            <Card.Meta>
-                              Amount {data.amountInUsd / 10e7} USD
-                            </Card.Meta>
-                            <Card.Meta>
-                              Amount {data.amountInEur / 10e7} EUR
-                            </Card.Meta>
-                            <Card.Meta>To Bank {data.toBankId}</Card.Meta>
-                            <Card.Meta>To Branch {data.toBranchId}</Card.Meta>
-                            <Card.Description>
-                              EUR/USD={data.amountInUsd / data.amountInEur}
-                            </Card.Description>
-                          </Card.Content>
-                        </Card>
-                      );
-                    })}
-                </Card.Group>
-              </div> */}
 
             <Table color="black" key={colors}>
-              {arrayData.length > 0 &&
-                arrayData.map((data, index) => {
-                  return (
-                    <Grid key={index} reversed="computer" columns="equal">
-                      <Grid.Row color="white">
-                        <Grid.Column>
-                          Branch
-                          <Grid.Column>{data?.branchId}</Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          Expected amount %<Grid.Column>10397.475</Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          Amount Borrowed
+              {dispDets}
+              {/* {arrayData.length > 0 &&
+                arrayData
+                  ?.slice(pageVisited, pageVisited + displayDetails)
+                  .map((data, index) => {
+                    return (
+                      <Grid key={index} reversed="computer" columns="equal">
+                        <Grid.Row color="white">
                           <Grid.Column>
-                            {data?.amountBorrowed / 10e7}
+                            Branch
+                            <Grid.Column>{data?.branchId}</Grid.Column>
                           </Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          Last Updated
-                          <Grid.Column>{date}</Grid.Column>
-                        </Grid.Column>
-                      </Grid.Row>
-                      <Grid.Row color="white">
-                        <Grid.Column>
-                          Approve
                           <Grid.Column>
-                            {data?.isDone ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
+                            Expected amount %
+                            <Grid.Column>10397.475</Grid.Column>
                           </Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          Exit
                           <Grid.Column>
-                            {" "}
-                            {data?.isClear ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
+                            Amount Borrowed
+                            <Grid.Column>
+                              {data?.amountBorrowed / 10e7}
+                            </Grid.Column>
                           </Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          Borrowed
                           <Grid.Column>
-                            {data?.isBorrowed ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
+                            Last Updated
+                            <Grid.Column>{date}</Grid.Column>
                           </Grid.Column>
-                        </Grid.Column>
-                        <Grid.Column>
-                          cost
-                          <Grid.Column>-</Grid.Column>
-                        </Grid.Column>
-                      </Grid.Row>
-                      <Divider />
-                    </Grid>
-                  );
-                })}
+                        </Grid.Row>
+                        <Grid.Row color="white">
+                          <Grid.Column>
+                            Approve
+                            <Grid.Column>
+                              {data?.isDone ? (
+                                <Icon
+                                  color="green"
+                                  name="checkmark"
+                                  size="large"
+                                />
+                              ) : (
+                                <Icon color="red" name="close" size="large" />
+                              )}
+                            </Grid.Column>
+                          </Grid.Column>
+                          <Grid.Column>
+                            Exit
+                            <Grid.Column>
+                              {" "}
+                              {data?.isClear ? (
+                                <Icon
+                                  color="green"
+                                  name="checkmark"
+                                  size="large"
+                                />
+                              ) : (
+                                <Icon color="red" name="close" size="large" />
+                              )}
+                            </Grid.Column>
+                          </Grid.Column>
+                          <Grid.Column>
+                            Borrowed
+                            <Grid.Column>
+                              {data?.isBorrowed ? (
+                                <Icon
+                                  color="green"
+                                  name="checkmark"
+                                  size="large"
+                                />
+                              ) : (
+                                <Icon color="red" name="close" size="large" />
+                              )}
+                            </Grid.Column>
+                          </Grid.Column>
+                          <Grid.Column>
+                            cost
+                            <Grid.Column>-</Grid.Column>
+                          </Grid.Column>
+                        </Grid.Row>
+                        <Divider />
+                      </Grid>
+                    );
+                  })} */}
 
-              {/* <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>To Client Address</Table.HeaderCell>
-                    <Table.HeaderCell>Amount USD</Table.HeaderCell>
-                    <Table.HeaderCell>Amount EUR</Table.HeaderCell>
-                    <Table.HeaderCell>From Bank</Table.HeaderCell>
-                    <Table.HeaderCell>From Branch</Table.HeaderCell>
-                    <Table.HeaderCell>To Branch</Table.HeaderCell>
-                    <Table.HeaderCell>Status</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header> */}
+              <ReactPaginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                pageCount={arrayData.length / 3}
+                onPageChange={changePage}
+                containerClassName={"paginationBttns"}
+                previousLinkClassName={"previousBttn"}
+                nextLinkClassName={"nextBttn"}
+                disabledClassName={"paginationDisabled"}
+                activeClassName={"paginationActive"}
+              ></ReactPaginate>
 
-              {/* {arrayDataF.length > 0 &&
-                arrayDataF.map((data, index) => {
-                  console.log(data[index]);
-                  return (
-                    <Table.Row key={index}>
-                      <Table.Cell>{data.toClient}</Table.Cell>
-                      <Table.Cell>{data.amountInUsd / 10e7} USD</Table.Cell>
-                      <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
-                      <Table.Cell>{data.reqId}</Table.Cell>
-                      <Table.Cell>
-                        {data.isDepositedToBranch ? (
-                          <Icon color="green" name="checkmark" size="large" />
-                        ) : (
-                          <Icon color="red" name="close" size="large" />
-                        )}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {data.isDone ? (
-                          <Icon color="green" name="checkmark" size="large" />
-                        ) : (
-                          <Icon color="red" name="close" size="large" />
-                        )}
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })} */}
+              {/* <Table.Footer> */}
 
-              {/* <Table.Body>
-                  {arrayDataForexDet.length > 0 &&
-                    arrayDataForexDet.map((data, index) => {
-                      // console.log(data[index]);
-                      return (
-                        <Table.Row key={index}>
-                          <Table.Cell>{data.toClient}</Table.Cell>
-                          <Table.Cell>{data.amountInUsd / 10e7}USD</Table.Cell>
-                          <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
-                          <Table.Cell>{data.fromBankId}</Table.Cell>
-                          <Table.Cell>{data.fromBranchId}</Table.Cell>
-                          <Table.Cell>{data.toBankId}</Table.Cell>
-                          <Table.Cell>{data.toBranchId}</Table.Cell>
-                          <Table.Cell>
-                            {data.isSentToBank ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
-                          </Table.Cell>
-                          <Table.Cell>
-                            {" "}
-                            {data.isSentToBank ? (
-                              <Button color="green">Approved</Button>
-                            ) : (
-                              <Button
-                                basic
-                                color="green"
-                                onClick={processForexRequestBranch}
-                              >
-                                Approve
-                              </Button>
-                            )}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
-                </Table.Body> */}
-              <Table.Footer>
-                <Table.Row>
+              {/* <Table.Row>
                   <Table.HeaderCell colSpan="3">
                     <Menu floated="right" pagination>
                       <Menu.Item as="a" icon>
@@ -395,8 +378,8 @@ function Borrow() {
                       </Menu.Item>
                     </Menu>
                   </Table.HeaderCell>
-                </Table.Row>
-              </Table.Footer>
+                </Table.Row> */}
+              {/*    */}
             </Table>
           </Accordion.Content>
         </Accordion>

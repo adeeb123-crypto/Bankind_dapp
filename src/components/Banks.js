@@ -83,13 +83,13 @@ function Banks() {
         let address = web3eth.givenProvider.selectedAddress;
         console.log("address", address);
 
-        if (bankid == 0) {
+        if (bankid =="Europe Bank") {
           setTokenSymbol("EUR");
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
           let response = await callContract.methods
-            .addBranch(bankid, branchaddress, amount * 100000000, "EUR")
+            .addBranch(0, branchaddress, amount * 100000000, "EUR")
             .send({ from: address, gas: 1000000 });
           console.log("Response from addbank:", response);
 
@@ -117,7 +117,7 @@ function Banks() {
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseFed);
           let response = await callContract.methods
-            .addBranch(bankid, branchaddress, amount * 100000000, "USD")
+            .addBranch(1, branchaddress, amount * 100000000, "USD")
             .send({ from: address, gas: 1000000 });
           console.log(response);
 
@@ -174,7 +174,7 @@ function Banks() {
             onChange={(e) => setAmount(e.target.value)}
           />
           <Form.Input
-            label="Bank ID"
+            label="Bank Name"
             placeholder="0"
             type="text"
             
