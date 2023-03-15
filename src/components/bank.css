@@ -1,18 +1,18 @@
 .main_page_bg {
   background-color: #18122b;
   height: 100vh;
-  padding-left: 100px;
-  padding-right: 100px;
+  padding-left: 700px;
+  padding-right: 700px;
 }
 
 .icon_banks {
-  color: white;
+  color: gainsboro;
 }
 
 .header_content_bank {
-  color: white;
+  color: gainsboro;
 }
 
 .header_cell_bank{
-    color: white;
+    color: gainsboro;
 }

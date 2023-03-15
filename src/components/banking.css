@@ -1,78 +1,140 @@
 .banking_page_bg {
   background-color: #18122b;
-  padding-left: 100px;
-  padding-right: 100px;
+  padding-left: 700px;
+  padding-right: 700px;
 }
 
 .header_content_forex {
-  color: white;
+  color: gainsboro;
 }
 
 .icon_banking {
-    color: white;
-  }
+  color: gainsboro;
+}
 
 
-  /* .ui.div.banking_footer{
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-    background-color: blue;
-  } */
+.ui.inverted.segment.banking_footer {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  background-color: #393053;
+}
 
-  /* .ui.vertical.segment.banking_footer{
-    padding-left: 0px;
-    padding-right: 0px;
-    background-color: #393053;
-  } */
+.ui.black.table {
+  background-color: #393053;
+  border-radius: 20px;
+}
 
-  .ui.inverted.segment.banking_footer{
-    padding-left: 0px !important;
-    padding-right: 0px !important;
-    background-color: #393053;
-  }
+.ui.form {
+  background-color: #393053;
+  
+  /* width: -400px; */
+  /* height:90%; */
+  /* padding-right: 55px; */
+  padding-bottom: 20px;
+  /* margin-left:-550px; */
+  /* margin-right: 70px; */
+  border-radius: 40px;
+  padding-top: 0px;
+  text-align: center !important;
+  /* justify-content: end !important; */
+}
 
-  .ui.black.table{
-    background-color: #393053;
-    border-radius: 20px;
-  }
-
+@media screen and (min-width: 90rem){
   .ui.form{
-    background-color: #393053;
-    padding-left: 55px ;
-    padding-right: 55px;
-    padding-bottom: 15px;
-    border-radius: 40px;
-    padding-top: 10px;
-  } 
-
-  .ui.form .field>label{
-    color: white;
+    height:50%;
   }
+}
 
-  .ui.secondary.button.button_banking{
-    background-color: white;
-    color: gray;
-    margin-top: 5px;
-  }
+.ui.form .fields {
+  display: grid;
+  width: 350px;
+  
+  /* text-align: center !important; */
+ padding-top: 20px;
 
-  .ui.table td {
-    color: white;
-  }
+  /* justify-content: center;
+  width: 1000px; */
+}
 
-  /* div{
+.ui.button {
+  width: 100px;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+
+.ui.form .field > label {
+  color: gainsborosmoke;
+  margin-top: 2rem;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+}
+
+.ui.form input:not([type]),
+.ui.form input[type="date"],
+.ui.form input[type="datetime-local"],
+.ui.form input[type="email"],
+.ui.form input[type="file"],
+.ui.form input[type="number"],
+.ui.form input[type="password"],
+.ui.form input[type="search"],
+.ui.form input[type="tel"],
+.ui.form input[type="text"],
+.ui.form input[type="time"],
+.ui.form input[type="url"] {
+  
+  width: 700px !important;
+  padding: 15px;
+  margin-top: 0.5px;
+}
+
+/* .ui.form .two.fields>.field, .ui.form .two.fields>.fields{
+  justify-content: center !important;
+  text-align: center !important;
+} */
+
+form {
+  display: grid;
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  
+}
+
+.ui.secondary.button.button_banking {
+  background-color: gainsboro;
+  color: gray;
+  margin-top: 5px;
+}
+
+.ui.table td {
+  color: gainsboro;
+}
+
+/* div{
     background-color:393053 ;
   } */
 
-  .ui.tab.active, .ui.tab.open{
-    background-color: #18122b ;
-  }
+.ui.tab.active,
+.ui.tab.open {
+  background-color: #18122b;
+}
 
-  .ui.menu:first-child{
-    background-color: #393053;
-    color: white;
-    border-radius: 20px;
-  }
+.ui.menu:first-child {
+  background-color: #393053;
+  color: gainsboro;
+  border-radius: 20px;
+}
 
-  .ui.menu .active.item{
-    color: white;
-  }
+.ui.menu .active.item {
+  color: gainsboro;
+}
+
+
+.ui.primary.button{
+  display: flex !important;
+  justify-content: center !important;
+}

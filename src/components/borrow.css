@@ -1,16 +1,16 @@
 .body
 {
-  background-color: white;
+  background-color: gainsboro;
   
 }
 
 
 .icon_borrow {
-    color: white;
+    color: gainsboro;
   }
   
   .header_content_borrow {
-    color: white;
+    color: gainsboro;
   }
 
   .banking_page_bg::-webkit-scrollbar {
@@ -18,11 +18,11 @@
   }
 
   i.icon{
-    color: white;
+    color: gainsboro;
   }
 
   .ui.pagination.menu .item {
-    color: white;
+    color: gainsboro;
   }
 
   .paginationBttns {
@@ -43,12 +43,12 @@
   }
 
   .paginationBttns a:hover {
-    color: white;
+    color: gainsboro;
     background-color: #393053;
   }
   
   .paginationActive a {
-    color: white;
+    color: gainsboro;
     background-color: #393053;
   }
 

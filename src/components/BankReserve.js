@@ -1,12 +1,15 @@
 //Need to make data consistent as on reaload the table dissapears
 import React, { useEffect } from "react";
-import { Button, Divider, Form, Header, Icon, Image } from "semantic-ui-react";
+import { Button, Divider, Form, Header, Icon, Image,Menu } from "semantic-ui-react";
 import { useState, use } from "react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Table } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import "./bankreserve.css";
+
+import "../assets/Employees.png";
 
 const colors = ["black"];
 
@@ -69,7 +72,7 @@ function BankReserve() {
         console.log("address", address);
 
         if (centralbankid == "ECB") {
-          setTokenSymbol("")
+          setTokenSymbol("");
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
@@ -91,7 +94,6 @@ function BankReserve() {
           console.log("arrayData:", arrayData);
           console.log("arrayData:", arrayData[0].amount);
           console.log("arrayData:", arrayData[0].bank);
-
         } else {
           setTokenSymbol("");
           setTokenSymbol("USD");
@@ -125,19 +127,36 @@ function BankReserve() {
 
   return (
     <div className="bank_reserve_page">
+      
+      <Menu  pagination>
+
+        <Menu.Item as={Link} to="/">Home</Menu.Item>
+        <Menu.Item as={Link} to="/banks">Bank</Menu.Item>
+        <Menu.Item as={Link} to="/branch">Branch</Menu.Item>
+        <Menu.Item as={Link} to="/banking">Client</Menu.Item>
+
+      </Menu>
+      {/* <Image  src="https://static.vecteezy.com/system/resources/thumbnails/004/474/419/small_2x/ease-of-online-banking-investment-free-vector.jpg" centered size='medium' /> */}
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
+      <Divider horizontal />
       <div>
+
+
         <Header as="h2" icon textAlign="center">
-          <Icon className="icon_bankreserve" name="money" circular />
+          {/* <Icon className="icon_bankreserve" name="money" circular /> */}
           <Header.Content className="header_content_bankreserve">
             {" "}
-            World Token Reserve
+            Token Reserve
           </Header.Content>
         </Header>
       </div>
+
       <Form unstackable>
         <Form.Group widths={2}>
           <Form.Input
-            label="Bank Adress"
+            label="Bank Address"
             placeholder="0xfsc257d..."
             type="text"
             value={bankaddress}
@@ -157,6 +176,10 @@ function BankReserve() {
             value={centralbankid}
             onChange={(e) => setCentralBankID(e.target.value)}
           />
+
+          {/* <Button type="submit" onClick={addbank}>
+            Submit
+          </Button> */}
         </Form.Group>
 
         {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
@@ -166,6 +189,7 @@ function BankReserve() {
       </Form>
       <Divider horizontal />
       <Divider horizontal />
+
       <div>
         <Table color="black" key={colors}>
           <Table.Header>

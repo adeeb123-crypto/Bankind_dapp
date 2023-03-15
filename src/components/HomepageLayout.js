@@ -8,6 +8,7 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import Banks from "./Banks";
 import "./homepagelayout.css";
+// import "./graphics.css";
 
 import { useNavigate } from "react-router-dom";
 import {
@@ -35,6 +36,34 @@ const { MediaContextProvider, Media } = createMedia({
 const HomepageHeading = ({ mobile }) => (
   <Container text>
 
+    {/* <div className="hhj">46
+    <div className="hhj">46</div>
+    <div className="hhj">46</div></div>
+    <div className="hhj">46</div>
+    <div className="hhj">46</div> */}
+
+    {/* <div className="animation-container">
+      <div className="y-axis-container">
+        <div className="container">
+          <div className="flash"></div>
+          <div className="coin side">
+            <div className="shine_" style="transform:rotate(-30deg);"></div>
+          </div>
+          <div className="side-coin"></div>
+          <div className="coin">
+            <div className="dai">
+              <div className="inner-dai">
+                <div className="inner-inner-dai"></div>
+              </div>
+              <div className="cutout"></div>
+              <div className="dai-shadow"></div>
+            </div>
+            <div className="shine"></div>
+          </div>
+        </div>
+      </div>
+      <div className="shadow"></div>
+    </div> */}
 
     <Header
       as="h1"
@@ -302,7 +331,7 @@ const HomepageLayout = () => (
               bordered
               rounded
               size="large"
-              src="/images/wireframe/white-image.png"
+              src="/images/wireframe/gainsboro-image.png"
             />
           </Grid.Column>
         </Grid.Row> */}
@@ -346,7 +375,7 @@ const HomepageLayout = () => (
         <p style={{ fontSize: "1.33em" }}>
           Instead of focusing on content creation and hard work, we have learned
           how to master the art of doing nothing by providing massive amounts of
-          whitespace and generic content that can seem massive, monolithic and
+          gainsborospace and generic content that can seem massive, monolithic and
           worth your attention.
         </p>
         <Button as="a" size="large">

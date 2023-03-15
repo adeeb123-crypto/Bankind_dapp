@@ -12,12 +12,17 @@ import {
   Breadcrumb,
   Accordion,
   Grid,
+  Menu,
+  Modal,
+  Advertisement, 
+  Message
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
 import { Card } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./branch.css";
 
 const colors = ["#393053"];
@@ -49,6 +54,7 @@ function Branch() {
   const [branchname, setBranchName] = useState("");
   const [counterEUR, setCounterEUR] = useState(0);
   const [counterUSD, setCounterUSD] = useState(0);
+  const [isCorrAcc, setIsCorrAcc] = useState(false);
   const navigate = useNavigate();
 
   const ref = useRef(null);
@@ -99,6 +105,8 @@ function Branch() {
         setIsActive(false);
       }
     }
+
+    checkDetails();
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -107,6 +115,83 @@ function Branch() {
     if (temp_data && temp_data_frx_det && temp_data_brr_det) return;
   }, [arrayData, arrayDataForexDet, setArrayBorrowDet]);
 
+  async function checkDetails() {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.enable();
+        // console.log("accounts", accounts);
+        const provider = await new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        const signer = await provider.getSigner();
+        // console.log("Signer", signer);
+        const address = await signer.getAddress();
+        // console.log(address);
+      } else {
+        console.log("MemtaMask Not Installed Maen");
+      }
+      const web3eth = new Web3(Web3.givenProvider);
+
+      const callContract = new web3eth.eth.Contract(
+        ABIbnksys,
+        contractAddressbnksys
+      );
+      const callContractECB = new web3eth.eth.Contract(
+        ABIEcb,
+        contractAddressEcb
+      );
+      const callContractFED = new web3eth.eth.Contract(
+        ABIFed,
+        contractAddressFed
+      );
+      if (web3eth.givenProvider) {
+        // console.log("Hello Provider Here", web3eth.givenProvider);
+        let address = web3eth.givenProvider.selectedAddress;
+        // console.log("address", address);
+
+        const formattedMetamaskAddress =
+          web3eth.utils.toChecksumAddress(address);
+
+        let IDByAddress = await callContract.methods
+          .idOfAddress(address)
+          .call();
+
+        let branchAddress = await callContract.methods
+          .branches(IDByAddress.bankId, IDByAddress.branchId)
+          .call();
+
+        if (branchAddress.bank === formattedMetamaskAddress) {
+          setIsCorrAcc(true);
+          if (IDByAddress.bankId == 0) {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let branchAddress = await callContract.methods
+              .branches(IDByAddress.bankId, IDByAddress.branchId)
+              .call();
+          } else {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let balanceOf = await callContractFED.methods
+              .balanceOf(address)
+              .call();
+          }
+        } else {
+          setIsCorrAcc(false);
+        }
+      }
+    } catch (error) {
+      console.log(Error);
+    }
+  }
+
+  
   async function addClient() {
     try {
       if (
@@ -158,7 +243,7 @@ function Branch() {
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseEcb);
 
-          if (IDByAddress.bankId == 0 && branchid == "Europe Branch") {
+          if (IDByAddress.bankId == 0 && branchid =="Europe Branch") {
             let response = await callContract.methods
               .addClient(
                 IDByAddress.bankId,
@@ -198,7 +283,7 @@ function Branch() {
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
 
-          if (IDByAddress.bankId == 1 && branchid == "USD Branch") {
+          if (IDByAddress.bankId == 1 && branchid =="USD Branch") {
             let response = await callContract.methods
               .addClient(
                 IDByAddress.bankId,
@@ -383,14 +468,14 @@ function Branch() {
         typeof window.ethereum !== "undefined"
       ) {
         const accounts = await window.ethereum.enable();
-        console.log("accounts", accounts);
+        // console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
         );
         const signer = await provider.getSigner();
-        console.log("Signer", signer);
+        // console.log("Signer", signer);
         const address = await signer.getAddress();
-        console.log(address);
+        // console.log(address);
       } else {
         console.log("MemtaMask Not Installed Maen");
       }
@@ -409,42 +494,55 @@ function Branch() {
         contractAddressFed
       );
       if (web3eth.givenProvider) {
-        console.log("Hello Provider Here", web3eth.givenProvider);
+        // console.log("Hello Provider Here", web3eth.givenProvider);
         let address = web3eth.givenProvider.selectedAddress;
-        console.log("address", address);
+        // console.log("address", address);
+
+        const formattedMetamaskAddress =
+          web3eth.utils.toChecksumAddress(address);
 
         let IDByAddress = await callContract.methods
           .idOfAddress(address)
           .call();
 
-        if (IDByAddress.bankId == 0) {
-          setTokenSymbol("EUR");
-          setBranchName("Europe Branch");
-          let IDByAddress = await callContract.methods
-            .idOfAddress(address)
-            .call();
-          setDetailsBranchID(IDByAddress.branchId);
+        let branchAddress = await callContract.methods
+          .branches(IDByAddress.bankId, IDByAddress.branchId)
+          .call();
 
-          let balanceOf = await callContractECB.methods
-            .balanceOf(address)
-            .call();
-          setBalanceBranch(balanceOf);
+    
+        if (branchAddress.branch === formattedMetamaskAddress) {
+          setIsCorrAcc(true);
+          if (IDByAddress.bankId == 0) {
+            setTokenSymbol("EUR");
+            setBranchName("Europe Branch");
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+            setDetailsBranchID(IDByAddress.branchId);
+
+            let balanceOf = await callContractECB.methods
+              .balanceOf(address)
+              .call();
+            setBalanceBranch(balanceOf);
+          } else {
+            setTokenSymbol("USD");
+            setBranchName("USD Branch");
+
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+            setDetailsBranchID(IDByAddress.branchId);
+
+            let balanceOf = await callContractFED.methods
+              .balanceOf(address)
+              .call();
+            setBalanceBranch(balanceOf);
+          }
         } else {
-          setTokenSymbol("USD");
-          setBranchName("USD Branch");
-
-          let IDByAddress = await callContract.methods
-            .idOfAddress(address)
-            .call();
-          setDetailsBranchID(IDByAddress.branchId);
-
-          let balanceOf = await callContractFED.methods
-            .balanceOf(address)
-            .call();
-          setBalanceBranch(balanceOf);
+          setIsCorrAcc(false);
         }
+        setIsConnectButtonClicked(true);
       }
-      setIsConnectButtonClicked(true);
     } catch (error) {
       console.log(Error);
     }
@@ -1044,184 +1142,306 @@ function Branch() {
   }
 
   return (
-    <div className="main_page_branch_bg">
-      <Breadcrumb className="bredcrumbs_branch">
-        <Breadcrumb.Section href="/" link>
-          Home
-        </Breadcrumb.Section>
-        <Breadcrumb.Divider />
-        <Breadcrumb.Section active>Branches</Breadcrumb.Section>
-      </Breadcrumb>
+    <>
+      {isCorrAcc ? (
+        <div className="main_page_branch_bg">
+          <Menu pagination>
+            <Menu.Item as={Link} to="/">
+              Home
+            </Menu.Item>
+            <Menu.Item as={Link} to="/banks">
+              Bank
+            </Menu.Item>
+            <Menu.Item as={Link} to="/branch">
+              Branch
+            </Menu.Item>
+            <Menu.Item as={Link} to="/banking">
+              Client
+            </Menu.Item>
+          </Menu>
+          {/* 
+    <Breadcrumb className="bredcrumbs_branch">
+      <Breadcrumb.Section href="/" link>
+        Home
+      </Breadcrumb.Section>
+      <Breadcrumb.Divider />
+      <Breadcrumb.Section active>Branches</Breadcrumb.Section>
+    </Breadcrumb> */}
 
-      <div>
-        <Header as="h2" icon textAlign="center">
-          <Icon className="icon_branch" name="user circle outline" circular />
-          <Header.Content className="header_content_branch">
+          <div>
+            <Header as="h2" icon textAlign="center">
+              <Icon
+                className="icon_branch"
+                name="user circle outline"
+                circular
+              />
+              <Header.Content className="header_content_branch">
+                {" "}
+                Branch
+              </Header.Content>
+            </Header>
+            {/* <Image
+                  centered
+                  size="medium"
+                  src="https://react.semantic-ui.com/images/wireframe/image.png"
+              /> */}
+          </div>
+
+          <div>
             {" "}
-            Branch
-          </Header.Content>
-        </Header>
-        {/* <Image
-                    centered
-                    size="medium"
-                    src="https://react.semantic-ui.com/images/wireframe/image.png"
-                /> */}
-      </div>
-      <div>
-        {" "}
-        <Card.Group centered className="card_connect_branch">
-          <Card>
-            <Card.Content>
-              <Card.Description>Branch: {branchname}</Card.Description>
-              <Card.Description>
-                Balance: {balancebranch / 10e7} {tokenSymbol}
-              </Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              <div className="ui two buttons">
-                {isconnectbuttonclicked ? (
-                  <></>
-                ) : (
-                  <Button secondary onClick={checkDetails}>
-                    Connect
-                  </Button>
-                )}
-              </div>
-            </Card.Content>
-          </Card>
-        </Card.Group>
-      </div>
-      <Divider />
+            <Card.Group centered className="card_connect_branch">
+              <Card>
+                <Card.Content>
+                  <Card.Description>Branch: {branchname}</Card.Description>
+                  <Card.Description>
+                    Balance: {balancebranch / 10e7} {tokenSymbol}
+                  </Card.Description>
+                </Card.Content>
+                <Card.Content extra>
+                  <div className="ui two buttons">
+                    {isconnectbuttonclicked ? (
+                      <></>
+                    ) : (
+                      <Button secondary onClick={checkDetails}>
+                        Connect
+                      </Button>
+                    )}
+                  </div>
+                </Card.Content>
+              </Card>
+            </Card.Group>
+          </div>
+          <Divider horizontal />
 
-      <Form unstackable>
-        <Form.Group widths={3}>
-          <Form.Input
-            label="Branch Name"
-            placeholder="Europe Branch..."
-            type="text"
-            value={branchid}
-            onChange={(e) => setBranchID(e.target.value)}
-          />
-          <Form.Input
-            label="Client Address"
-            placeholder="0x00..."
-            type="text"
-            value={clientaddress}
-            onChange={(e) => setClientAddress(e.target.value)}
-          />
-          <Form.Input
-            label="Amount"
-            placeholder="10..."
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </Form.Group>
+          <Form unstackable>
+            <Form.Group widths={3}>
+              <Form.Input
+                label="Branch Name"
+                placeholder="Europe Branch..."
+                type="text"
+                value={branchid}
+                onChange={(e) => setBranchID(e.target.value)}
+              />
+              <Form.Input
+                label="Client Address"
+                placeholder="0x00..."
+                type="text"
+                value={clientaddress}
+                onChange={(e) => setClientAddress(e.target.value)}
+              />
+              <Form.Input
+                label="Amount"
+                placeholder="10..."
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </Form.Group>
 
-        <Button type="submit" onClick={addClient}>
-          Submit
-        </Button>
-      </Form>
-      <Divider />
-      <div>
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Client Address</Table.HeaderCell>
-              <Table.HeaderCell>Amount</Table.HeaderCell>
-              <Table.HeaderCell>Bank Name</Table.HeaderCell>
-              <Table.HeaderCell>Client Name</Table.HeaderCell>
-              <Table.HeaderCell>Approved</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
+            <Button type="submit" onClick={addClient}>
+              Submit
+            </Button>
+          </Form>
+          <Divider horizontal />
+          <div>
+            <Table>
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Client Address</Table.HeaderCell>
+                  <Table.HeaderCell>Amount</Table.HeaderCell>
+                  <Table.HeaderCell>Bank Name</Table.HeaderCell>
+                  <Table.HeaderCell>Client Name</Table.HeaderCell>
+                  <Table.HeaderCell>Approved</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
 
-          <Table.Body>
-            {arrayData.length > 0 &&
-              arrayData.map((data, index) => {
-                return (
-                  <Table.Row key={index}>
-                    <Table.Cell>{data.client}</Table.Cell>
-                    <Table.Cell>
-                      {data.amount / 10e7} {data.tokenSymbol}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {data.bankId == 0 ? "Europe Bank" : "USD Bank"}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {data.bankId == 0 && data.clientId
-                        ? "Europe Client"
-                        : "USD Client"}
-                    </Table.Cell>
-                    <Table.Cell>True</Table.Cell>
-                  </Table.Row>
-                );
-              })}
-          </Table.Body>
-        </Table>
-        <Divider />
-      </div>
-
-      <div>
-        <div>
-          <Accordion>
-            <Accordion.Title
-              active={isActive === 2}
-              index={2}
-              onClick={handleClickEventForex}
-              className="accordian_title_branch"
-            >
-              <Icon name="dropdown" />
-              Forex
-            </Accordion.Title>
+              <Table.Body>
+                {arrayData.length > 0 &&
+                  arrayData.map((data, index) => {
+                    return (
+                      <Table.Row key={index}>
+                        <Table.Cell>{data.client}</Table.Cell>
+                        <Table.Cell>
+                          {data.amount / 10e7} {data.tokenSymbol}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {data.bankId == 0 ? "Europe Bank" : "USD Bank"}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {data.bankId == 0 && data.clientId
+                            ? "Europe Client"
+                            : "USD Client"}
+                        </Table.Cell>
+                        <Table.Cell>True</Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+              </Table.Body>
+            </Table>
             <Divider horizontal />
-            <Accordion.Content active={isActive === 2}>
-              <Header as="h2" icon textAlign="center">
-                <Icon
-                  className="icon_branch"
-                  name="wait"
-                  circular
-                  size="tiny"
-                />
-                <Header.Content className="header_content_branch">
-                  Pending Forex Requests
-                </Header.Content>
-              </Header>
-              <Button primary onClick={checkForexRequest}>
-                View Requests
-              </Button>
-              <Button color="grey" onClick={() => navigate("/forex")}>
-                View History
-              </Button>
+          </div>
 
-              <Header as="h2" icon textAlign="center">
-                {/* <Header.Content>Forex Details</Header.Content> */}
-              </Header>
-              <Divider horizontal />
-              <div>
-                <Card.Group centered>
-                  {arrayDataForexDet.length > 0 &&
-                    arrayDataForexDet.map((data, index) => {
-                      return (
-                        <Card>
-                          <Card.Content>
+          <div>
+            <div>
+              <Accordion>
+                <Accordion.Title
+                  active={isActive === 2}
+                  index={2}
+                  onClick={handleClickEventForex}
+                  className="accordian_title_branch"
+                >
+                  <Icon name="dropdown" />
+                  Forex
+                </Accordion.Title>
+                <Divider horizontal />
+                <Accordion.Content active={isActive === 2}>
+                  <Header as="h2" icon textAlign="center">
+                    <Icon
+                      className="icon_branch"
+                      name="wait"
+                      circular
+                      size="tiny"
+                    />
+                    <Header.Content className="header_content_branch">
+                      Pending Forex Requests
+                    </Header.Content>
+                  </Header>
+                  <Button primary onClick={checkForexRequest}>
+                    View Requests
+                  </Button>
+                  <Button color="grey" onClick={() => navigate("/forex")}>
+                    View History
+                  </Button>
+
+                  <Header as="h2" icon textAlign="center">
+                    {/* <Header.Content>Forex Details</Header.Content> */}
+                  </Header>
+                  <Divider horizontal />
+                  <div>
+                    <Card.Group centered>
+                      {arrayDataForexDet.length > 0 &&
+                        arrayDataForexDet.map((data, index) => {
+                          return (
+                            <Card>
+                              <Card.Content>
+                                <Icon
+                                  name="money bill alternate outline"
+                                  circular
+                                />
+                                <Card.Header>
+                                  Forex Request: {data.reqId}{" "}
+                                </Card.Header>
+                                <Card.Meta>
+                                  Amount {data.amountInUsd / 10e7} USD
+                                </Card.Meta>
+                                <Card.Meta>
+                                  Amount {data.amountInEur / 10e7} EUR
+                                </Card.Meta>
+                                <Card.Meta>To Bank {data.toBankId}</Card.Meta>
+                                <Card.Meta>
+                                  To Branch {data.toBranchId}
+                                </Card.Meta>
+                                <Card.Description>
+                                  EUR/USD=
+                                  {data.amountInUsd / data.amountInEur}
+                                </Card.Description>
+                                <Button
+                                  basic
+                                  color="green"
+                                  onClick={processForexRequestBranch}
+                                >
+                                  Approve
+                                </Button>
+                              </Card.Content>
+                            </Card>
+                          );
+                        })}
+                    </Card.Group>
+                  </div>
+
+                  {/* <Table color="black" key={colors} inverted> */}
+                  {/* <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>To Client Address</Table.HeaderCell>
+                  <Table.HeaderCell>Amount USD</Table.HeaderCell>
+                  <Table.HeaderCell>Amount EUR</Table.HeaderCell>
+                  <Table.HeaderCell>From Bank</Table.HeaderCell>
+                  <Table.HeaderCell>From Branch</Table.HeaderCell>
+                  <Table.HeaderCell>To Branch</Table.HeaderCell>
+                  <Table.HeaderCell>Status</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header> */}
+
+                  {/* <div>
+                <Grid reversed="computer" columns="equal">
+                  <Grid.Row color="black">
+                    <Grid.Column>
+                      Created at
+                      <Grid.Column>2022-06-20 18:53</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Expected amount
+                      <Grid.Column>10397.475 USDT BSC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      You got
+                      <Grid.Column>0 USDT BSC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Last Updated
+                      <Grid.Column>2022-06-20 18:53</Grid.Column>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row color="black">
+                    <Grid.Column>
+                      Collateral amount
+                      <Grid.Column>1 BTC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Liquidation price
+                      <Grid.Column>11508.7051 BTC/USDT</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Monthly interest
+                      <Grid.Column>129.9684 USDT</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Repayment amount
+                      <Grid.Column>0 USDT</Grid.Column>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </div> */}
+
+                  {/* <Table.Body>
+                {arrayDataForexDet.length > 0 &&
+                  arrayDataForexDet.map((data, index) => {
+                    // console.log(data[index]);
+                    return (
+                      <Table.Row key={index}>
+                        <Table.Cell>{data.toClient}</Table.Cell>
+                        <Table.Cell>{data.amountInUsd / 10e7}USD</Table.Cell>
+                        <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
+                        <Table.Cell>{data.fromBankId}</Table.Cell>
+                        <Table.Cell>{data.fromBranchId}</Table.Cell>
+                        <Table.Cell>{data.toBankId}</Table.Cell>
+                        <Table.Cell>{data.toBranchId}</Table.Cell>
+                        <Table.Cell>
+                          {data.isSentToBank ? (
                             <Icon
-                              name="money bill alternate outline"
-                              circular
+                              color="green"
+                              name="checkmark"
+                              size="large"
                             />
-                            <Card.Header>
-                              Forex Request: {data.reqId}{" "}
-                            </Card.Header>
-                            <Card.Meta>
-                              Amount {data.amountInUsd / 10e7} USD
-                            </Card.Meta>
-                            <Card.Meta>
-                              Amount {data.amountInEur / 10e7} EUR
-                            </Card.Meta>
-                            <Card.Meta>To Bank {data.toBankId}</Card.Meta>
-                            <Card.Meta>To Branch {data.toBranchId}</Card.Meta>
-                            <Card.Description>
-                              EUR/USD={data.amountInUsd / data.amountInEur}
-                            </Card.Description>
+                          ) : (
+                            <Icon color="red" name="close" size="large" />
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {" "}
+                          {data.isSentToBank ? (
+                            <Button color="green">Approved</Button>
+                          ) : (
                             <Button
                               basic
                               color="green"
@@ -1229,163 +1449,159 @@ function Branch() {
                             >
                               Approve
                             </Button>
-                          </Card.Content>
-                        </Card>
-                      );
-                    })}
-                </Card.Group>
-              </div>
+                          )}
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+              </Table.Body> */}
+                  {/* </Table> */}
+                </Accordion.Content>
+                <Accordion.Title
+                  active={isActive === 1}
+                  index={1}
+                  onClick={handleClickEventLend}
+                  className="accordian_title_branch"
+                >
+                  <Icon name="dropdown" />
+                  Lending
+                </Accordion.Title>
+                <Accordion.Content active={isActive === 1}>
+                  <Header as="h2" icon textAlign="center">
+                    <Icon className="icon_branch" name="wait" circular />
+                    <Header.Content className="header_content_branch">
+                      Pending Borrow Requests
+                    </Header.Content>
+                  </Header>
+                  <Button primary onClick={checkBorrowRequest}>
+                    View Requests
+                  </Button>
+                  <Button color="grey" onClick={() => navigate("/borrow")}>
+                    View History
+                  </Button>
+                  <Header as="h2" icon textAlign="center"></Header>
 
-              {/* <Table color="black" key={colors} inverted> */}
-              {/* <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>To Client Address</Table.HeaderCell>
-                    <Table.HeaderCell>Amount USD</Table.HeaderCell>
-                    <Table.HeaderCell>Amount EUR</Table.HeaderCell>
-                    <Table.HeaderCell>From Bank</Table.HeaderCell>
-                    <Table.HeaderCell>From Branch</Table.HeaderCell>
-                    <Table.HeaderCell>To Branch</Table.HeaderCell>
-                    <Table.HeaderCell>Status</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header> */}
+                  <Card.Group centered>
+                    {arrayDataBorrowDispDet.length > 0 &&
+                      arrayDataBorrowDispDet.map((data, index) => {
+                        return (
+                          <Card>
+                            <Card.Content>
+                              <Icon name="handshake outline" circular />
+                              <Card.Header>
+                                Borrow Request: {data.positionId}{" "}
+                              </Card.Header>
+                              <Card.Meta>
+                                Amount {data.amountBorrowed / 10e7} USD
+                              </Card.Meta>
+                              <Card.Meta>
+                                Status{" "}
+                                {data.isDone ? (
+                                  <Icon
+                                    color="green"
+                                    name="checkmark"
+                                    size="large"
+                                  />
+                                ) : (
+                                  <Icon color="red" name="close" size="large" />
+                                )}
+                              </Card.Meta>
+                              <Card.Description>
+                                Interest Rate {10} %
+                              </Card.Description>
+                              {data.isDone ? (
+                                <Button color="green">Approved</Button>
+                              ) : (
+                                <Button
+                                  basic
+                                  color="green"
+                                  onClick={processLoan}
+                                >
+                                  Approve
+                                </Button>
+                              )}
+                            </Card.Content>
+                          </Card>
+                        );
+                      })}
+                  </Card.Group>
+                  {/* <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Client ID</Table.HeaderCell>
+                  <Table.HeaderCell>Amount Borrowed</Table.HeaderCell>
+                  <Table.HeaderCell>Branch ID</Table.HeaderCell>
+                  <Table.HeaderCell>Position ID</Table.HeaderCell>
+                  <Table.HeaderCell>Status</Table.HeaderCell>
+                  <Table.HeaderCell>Approved</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header> */}
 
-              {/* <div>
-                  <Grid reversed="computer" columns="equal">
-                    <Grid.Row color="black">
-                      <Grid.Column>
-                        Created at
-                        <Grid.Column>2022-06-20 18:53</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Expected amount
-                        <Grid.Column>10397.475 USDT BSC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        You got
-                        <Grid.Column>0 USDT BSC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Last Updated
-                        <Grid.Column>2022-06-20 18:53</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row color="black">
-                      <Grid.Column>
-                        Collateral amount
-                        <Grid.Column>1 BTC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Liquidation price
-                        <Grid.Column>11508.7051 BTC/USDT</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Monthly interest
-                        <Grid.Column>129.9684 USDT</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Repayment amount
-                        <Grid.Column>0 USDT</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-                </div> */}
-
-              {/* <Table.Body>
-                  {arrayDataForexDet.length > 0 &&
-                    arrayDataForexDet.map((data, index) => {
-                      // console.log(data[index]);
-                      return (
-                        <Table.Row key={index}>
-                          <Table.Cell>{data.toClient}</Table.Cell>
-                          <Table.Cell>{data.amountInUsd / 10e7}USD</Table.Cell>
-                          <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
-                          <Table.Cell>{data.fromBankId}</Table.Cell>
-                          <Table.Cell>{data.fromBranchId}</Table.Cell>
-                          <Table.Cell>{data.toBankId}</Table.Cell>
-                          <Table.Cell>{data.toBranchId}</Table.Cell>
-                          <Table.Cell>
-                            {data.isSentToBank ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
-                          </Table.Cell>
-                          <Table.Cell>
-                            {" "}
-                            {data.isSentToBank ? (
-                              <Button color="green">Approved</Button>
-                            ) : (
-                              <Button
-                                basic
-                                color="green"
-                                onClick={processForexRequestBranch}
-                              >
-                                Approve
-                              </Button>
-                            )}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
-                </Table.Body> */}
-              {/* </Table> */}
-            </Accordion.Content>
-            <Accordion.Title
-              active={isActive === 1}
-              index={1}
-              onClick={handleClickEventLend}
-              className="accordian_title_branch"
-            >
-              <Icon name="dropdown" />
-              Lending
-            </Accordion.Title>
-            <Accordion.Content active={isActive === 1}>
-              <Header as="h2" icon textAlign="center">
-                <Icon className="icon_branch" name="wait" circular />
-                <Header.Content className="header_content_branch">
-                  Pending Borrow Requests
-                </Header.Content>
-              </Header>
-              <Button primary onClick={checkBorrowRequest}>
-                View Requests
-              </Button>
-              <Button color="grey" onClick={() => navigate("/borrow")}>
-                View History
-              </Button>
-              <Header as="h2" icon textAlign="center"></Header>
-
-              <Card.Group centered>
+                  {/* <div>
+                <Grid reversed="computer" columns="equal">
+                  <Grid.Row color="black">
+                    <Grid.Column>
+                      Created at
+                      <Grid.Column>2022-06-20 18:53</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Expected amount
+                      <Grid.Column>10397.475 USDT BSC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      You got
+                      <Grid.Column>0 USDT BSC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Last Updated
+                      <Grid.Column>2022-06-20 18:53</Grid.Column>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row color="black">
+                    <Grid.Column>
+                      Collateral amount
+                      <Grid.Column>1 BTC</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Liquidation price
+                      <Grid.Column>11508.7051 BTC/USDT</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Monthly interest
+                      <Grid.Column>129.9684 USDT</Grid.Column>
+                    </Grid.Column>
+                    <Grid.Column>
+                      Repayment amount
+                      <Grid.Column>0 USDT</Grid.Column>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </div> */}
+                  {/* <Table.Body>
                 {arrayDataBorrowDispDet.length > 0 &&
                   arrayDataBorrowDispDet.map((data, index) => {
+                    // console.log(data[index]);
                     return (
-                      <Card>
-                        <Card.Content>
-                          <Icon name="handshake outline" circular />
-                          <Card.Header>
-                            Borrow Request: {data.positionId}{" "}
-                          </Card.Header>
-                          <Card.Meta>
-                            Amount {data.amountBorrowed / 10e7} USD
-                          </Card.Meta>
-                          <Card.Meta>
-                            Status{" "}
-                            {data.isDone ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
-                          </Card.Meta>
-                          <Card.Description>
-                            Interest Rate {10} %
-                          </Card.Description>
+                      <Table.Row key={index}>
+                        <Table.Cell>{data.clientId}</Table.Cell>
+                        <Table.Cell>{data.amountBorrowed / 10e7}</Table.Cell>
+                        <Table.Cell>{data.branchId}</Table.Cell>
+                        <Table.Cell>{data.positionId}</Table.Cell>
+                        <Table.Cell>
+                          {data.isBorrowed ? "True" : "False"}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {data.isDone ? (
+                            <Icon
+                              color="green"
+                              name="checkmark"
+                              size="large"
+                            />
+                          ) : (
+                            <Icon color="red" name="close" size="large" />
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {" "}
                           {data.isDone ? (
                             <Button color="green">Approved</Button>
                           ) : (
@@ -1393,108 +1609,29 @@ function Branch() {
                               Approve
                             </Button>
                           )}
-                        </Card.Content>
-                      </Card>
+                        </Table.Cell>
+                      </Table.Row>
                     );
                   })}
-              </Card.Group>
-              {/* <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell>Client ID</Table.HeaderCell>
-                    <Table.HeaderCell>Amount Borrowed</Table.HeaderCell>
-                    <Table.HeaderCell>Branch ID</Table.HeaderCell>
-                    <Table.HeaderCell>Position ID</Table.HeaderCell>
-                    <Table.HeaderCell>Status</Table.HeaderCell>
-                    <Table.HeaderCell>Approved</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header> */}
-
-              {/* <div>
-                  <Grid reversed="computer" columns="equal">
-                    <Grid.Row color="black">
-                      <Grid.Column>
-                        Created at
-                        <Grid.Column>2022-06-20 18:53</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Expected amount
-                        <Grid.Column>10397.475 USDT BSC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        You got
-                        <Grid.Column>0 USDT BSC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Last Updated
-                        <Grid.Column>2022-06-20 18:53</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row color="black">
-                      <Grid.Column>
-                        Collateral amount
-                        <Grid.Column>1 BTC</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Liquidation price
-                        <Grid.Column>11508.7051 BTC/USDT</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Monthly interest
-                        <Grid.Column>129.9684 USDT</Grid.Column>
-                      </Grid.Column>
-                      <Grid.Column>
-                        Repayment amount
-                        <Grid.Column>0 USDT</Grid.Column>
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-                </div> */}
-              {/* <Table.Body>
-                  {arrayDataBorrowDispDet.length > 0 &&
-                    arrayDataBorrowDispDet.map((data, index) => {
-                      // console.log(data[index]);
-                      return (
-                        <Table.Row key={index}>
-                          <Table.Cell>{data.clientId}</Table.Cell>
-                          <Table.Cell>{data.amountBorrowed / 10e7}</Table.Cell>
-                          <Table.Cell>{data.branchId}</Table.Cell>
-                          <Table.Cell>{data.positionId}</Table.Cell>
-                          <Table.Cell>
-                            {data.isBorrowed ? "True" : "False"}
-                          </Table.Cell>
-                          <Table.Cell>
-                            {data.isDone ? (
-                              <Icon
-                                color="green"
-                                name="checkmark"
-                                size="large"
-                              />
-                            ) : (
-                              <Icon color="red" name="close" size="large" />
-                            )}
-                          </Table.Cell>
-                          <Table.Cell>
-                            {" "}
-                            {data.isDone ? (
-                              <Button color="green">Approved</Button>
-                            ) : (
-                              <Button basic color="green" onClick={processLoan}>
-                                Approve
-                              </Button>
-                            )}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
-                </Table.Body> */}
-            </Accordion.Content>
-          </Accordion>
-          <Divider horizontal />
-          <Divider horizontal />
-          <Divider horizontal />
+              </Table.Body> */}
+                </Accordion.Content>
+              </Accordion>
+              <Divider horizontal />
+              <Divider horizontal />
+              <Divider horizontal />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <Message icon>
+        <Icon name='circle notched' loading />
+        <Message.Content>
+          <Message.Header>Wrong Account!!!</Message.Header>
+          Please Change Your Account
+        </Message.Content>
+      </Message>
+      )}
+    </>
   );
 }
 export default Branch;

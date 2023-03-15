@@ -1,13 +1,13 @@
 .icon_forex {
-    color: white;
+    color: gainsboro;
   }
   
   .header_content_forex {
-    color: white;
+    color: gainsboro;
   }
 
   .ui.grid>.row>.column {
-    color: white;
+    color: gainsboro;
     padding-left: 40px;
     padding-top: 10px;
     padding-bottom: 5px;

@@ -66,7 +66,7 @@ function Borrow() {
       .map((data, index) => {
         return (
           <Grid key={index} reversed="computer" columns="equal">
-            <Grid.Row color="white">
+            <Grid.Row color="gainsboro">
               <Grid.Column>
                 Branch
                 <Grid.Column>
@@ -88,7 +88,7 @@ function Borrow() {
                 <Grid.Column>{date}</Grid.Column>
               </Grid.Column>
             </Grid.Row>
-            <Grid.Row color="white">
+            <Grid.Row color="gainsboro">
               <Grid.Column>
                 Approve
                 <Grid.Column>
@@ -275,7 +275,7 @@ function Borrow() {
                   .map((data, index) => {
                     return (
                       <Grid key={index} reversed="computer" columns="equal">
-                        <Grid.Row color="white">
+                        <Grid.Row color="gainsboro">
                           <Grid.Column>
                             Branch
                             <Grid.Column>{data?.branchId}</Grid.Column>
@@ -295,7 +295,7 @@ function Borrow() {
                             <Grid.Column>{date}</Grid.Column>
                           </Grid.Column>
                         </Grid.Row>
-                        <Grid.Row color="white">
+                        <Grid.Row color="gainsboro">
                           <Grid.Column>
                             Approve
                             <Grid.Column>

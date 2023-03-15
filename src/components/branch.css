@@ -4,21 +4,21 @@ body {
 
 .main_page_branch_bg{
     background-color: #18122B;
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left: 700px;
+    padding-right: 700px;
     /* height:100vh; */
 }
 
 .bredcrumbs_branch{
-    color: white;
+    color: gainsboro;
 }
 
 .header_content_branch{
-    color: white;
+    color: gainsboro;
 }
 
 .icon_branch{
-    color: white;
+    color: gainsboro;
 }
 
 .card_connect_branch{
@@ -35,16 +35,53 @@ body {
 }
 
 /* .accordian_title_branch{
-    background-color: white;
+    background-color: gainsboro;
     margin-left: 35rem;
     margin-right: 35rem;
 } */
 
 
 .ui.accordion .title:not(.ui){
-    color: white;
+    color: gainsboro;
     background-color: #443C68;
     display: flex;
     align-items: start;
     border-radius: 20px;
+}
+
+.ui.card.branch_card{
+
+    height: 100% !important;
+    width: 20%;
+    border-radius: 20px;
+    margin-top: 10rem !important;
+    display: grid !important;
+    justify-content: center !important;
+}
+/* .App {
+    display: flex;
+    text-align: center;
+} */
+
+.ui.message{
+    display: flex !important;
+    text-align: center !important;
+    margin-top: 400px !important;
+    /* margin-right: 600px !important; */
+    margin-left: 500px !important;
+    height: 100%;
+    width: 50% !important;
+    
+
+}
+
+.ui.icon.message>.icon:not(.close){
+    color: black;
+}
+.ui.form .eight.fields .ui.input input, .ui.form .five.fields .ui.input input, .ui.form .four.fields .ui.input input, .ui.form .nine.fields .ui.input input, .ui.form .seven.fields .ui.input input, .ui.form .six.fields .ui.input input, .ui.form .ten.fields .ui.input input, .ui.form .three.fields .ui.input input, .ui.form .two.fields .ui.input input, .ui.form .wide.field .ui.input input{
+    background-color: gainsboro
+}
+
+.ui.form .field>label{
+    color: gainsboro !important;
 }

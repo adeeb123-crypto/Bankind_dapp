@@ -18,6 +18,8 @@ import {
   List,
   Container,
   Tab,
+  Menu,
+  Message
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -45,9 +47,11 @@ function Banking() {
   const [clientName, setClientName] = useState("");
   const [bankName, setBankName] = useState("");
   const [checkClient, setCheckClient] = useState("");
+  const [isCorrAcc, setIsCorrAcc] = useState(false);
 
   useEffect(() => {
     // someForexDets()
+    checkDetails();
 
     let temp_dataF = window.localStorage.getItem("DataF");
     if (temp_dataF) {
@@ -77,6 +81,82 @@ function Banking() {
 
     // window.localStorage.clear();
   }, [arrayDataF, arrayDataBr, arrayDataloan]);
+
+  async function checkDetails() {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.enable();
+        // console.log("accounts", accounts);
+        const provider = await new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        const signer = await provider.getSigner();
+        // console.log("Signer", signer);
+        const address = await signer.getAddress();
+        // console.log(address);
+      } else {
+        console.log("MemtaMask Not Installed Maen");
+      }
+      const web3eth = new Web3(Web3.givenProvider);
+
+      const callContract = new web3eth.eth.Contract(
+        ABIbnksys,
+        contractAddressbnksys
+      );
+      const callContractECB = new web3eth.eth.Contract(
+        ABIEcb,
+        contractAddressEcb
+      );
+      const callContractFED = new web3eth.eth.Contract(
+        ABIFed,
+        contractAddressFed
+      );
+      if (web3eth.givenProvider) {
+        // console.log("Hello Provider Here", web3eth.givenProvider);
+        let address = web3eth.givenProvider.selectedAddress;
+        // console.log("address", address);
+
+        const formattedMetamaskAddress =
+          web3eth.utils.toChecksumAddress(address);
+
+        let IDByAddress = await callContract.methods
+          .idOfAddress(address)
+          .call();
+
+        let branchAddress = await callContract.methods
+          .clients(IDByAddress.bankId, IDByAddress.branchId)
+          .call();
+
+        if (branchAddress.client === formattedMetamaskAddress) {
+          setIsCorrAcc(true);
+          if (IDByAddress.bankId == 0) {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let branchAddress = await callContract.methods
+              .branches(IDByAddress.bankId, IDByAddress.branchId)
+              .call();
+          } else {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let balanceOf = await callContractFED.methods
+              .balanceOf(address)
+              .call();
+          }
+        } else {
+          setIsCorrAcc(false);
+        }
+      }
+    } catch (error) {
+      console.log(Error);
+    }
+  }
 
   async function getAddress() {
     try {
@@ -797,538 +877,570 @@ function Banking() {
   }
 
   return (
-    <div className="banking_page_bg">
-      <div>
-        {isconnected ? (
-          <></>
-        ) : (
-          <Button
-            className="button_banking"
-            floated="right"
-            secondary
-            onClick={giveDetails}
-          >
-            Connect
-          </Button>
-        )}
+    <>
+      {isCorrAcc ? (
+        <div className="banking_page_bg">
+          <div>
+            <Menu pagination>
+              <Menu.Item as={Link} to="/">
+                Home
+              </Menu.Item>
+              <Menu.Item as={Link} to="/banks">
+                Bank
+              </Menu.Item>
+              <Menu.Item as={Link} to="/branch">
+                Branch
+              </Menu.Item>
+              <Menu.Item as={Link} to="/banking">
+                Client
+              </Menu.Item>
+            </Menu>
 
-        <Breadcrumb>
-          <Breadcrumb.Section href="/" link>
-            Home
-          </Breadcrumb.Section>
-          <Breadcrumb.Divider />
-          <Breadcrumb.Section active>Banking</Breadcrumb.Section>
-        </Breadcrumb>
+            <Divider horizontal />
 
-        {isconnected ? (
-          <Card centered>
-            <Image
-              src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
-              wrapped
-              ui={false}
-            />
-            <Card.Content>
-              <Card.Header>{clientName}</Card.Header>
+            {isconnected ? (
+              <></>
+            ) : (
+              <Button className="button_banking" primary onClick={giveDetails}>
+                Connect
+              </Button>
+            )}
 
-              <Card.Meta>
-                <span className="date">client ID: {0}</span>
-              </Card.Meta>
-            </Card.Content>
-            <Card.Content extra>
-              <a>
-                <Icon name="money bill alternate outline" />
-                {1000} EUR
-              </a>
-            </Card.Content>
-          </Card>
-        ) : (
-          <></>
-        )}
-      </div>
-      <Divider horizontal />
+            {isconnected ? (
+              <Card centered>
+                <Image
+                  src="https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                  wrapped
+                  ui={false}
+                />
+                <Card.Content>
+                  <Card.Header>{clientName}</Card.Header>
 
-      <Tab
-        menu={{ pointing: true }}
-        panes={[
-          {
-            menuItem: "Forex",
-            render: () => (
-              <Tab.Pane attached={false}>
-                <div>
-                  <Header as="h2" icon textAlign="center">
-                    <Icon className="icon_banking" name="money" circular />
-                    <Header.Content className="icon_banking">
-                      Forex{" "}
-                    </Header.Content>
-                  </Header>
-                </div>
+                  <Card.Meta>
+                    <span className="date">client ID: {0}</span>
+                  </Card.Meta>
+                </Card.Content>
+                <Card.Content extra>
+                  <a>
+                    <Icon name="money bill alternate outline" />
+                    {1000} EUR
+                  </a>
+                </Card.Content>
+              </Card>
+            ) : (
+              <></>
+            )}
+          </div>
+          <Divider horizontal />
 
-                <Form unstackable>
-                  <Form.Group widths={2}>
-                    <Form.Input
-                      label="Reciever Address"
-                      placeholder="0xfsc257d..."
-                      type="text"
-                      value={clientaddress}
-                      onChange={(e) => setClientAddress(e.target.value)}
-                    />
-                    <Form.Input
-                      label="Amount"
-                      placeholder="10"
-                      type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                    />
-                  </Form.Group>
+          <Tab
+            menu={{ pointing: true }}
+            panes={[
+              {
+                menuItem: "Forex",
+                render: () => (
+                  <Tab.Pane attached={false}>
+                    <div>
+                      <Header as="h2" icon textAlign="center">
+                        <Icon className="icon_banking" name="money" circular />
+                        <Header.Content className="icon_banking">
+                          Forex{" "}
+                        </Header.Content>
+                      </Header>
+                    </div>
 
-                  {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
-                  <Button type="submit" onClick={forex}>
-                    Submit
-                  </Button>
-                </Form>
-                <Divider hidden />
-                <div>
-                  <Header as="h2" icon textAlign="center">
-                    <Header.Content className="header_content_forex">
-                      Forex Statement{" "}
-                    </Header.Content>
-                  </Header>
+                    <Form unstackable>
+                      <Form.Group widths={2}>
+                        <Form.Input
+                          label="Reciever Address"
+                          placeholder="0xfsc257d..."
+                          type="text"
+                          value={clientaddress}
+                          onChange={(e) => setClientAddress(e.target.value)}
+                        />
+                        <Form.Input
+                          label="Amount"
+                          placeholder="10"
+                          type="number"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                        />
+                      </Form.Group>
 
-                  <Table color="black" key={colors}>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell>Receiver Address</Table.HeaderCell>
-                        <Table.HeaderCell>Amount USD</Table.HeaderCell>
-                        <Table.HeaderCell>Amount EUR</Table.HeaderCell>
-                        <Table.HeaderCell>Req ID</Table.HeaderCell>
-                        <Table.HeaderCell>Approved</Table.HeaderCell>
-                        <Table.HeaderCell>Status</Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                      {arrayDataF.length > 0 &&
-                        arrayDataF.map((data, index) => {
-                          console.log(data[index]);
-                          return (
-                            <Table.Row key={index}>
-                              <Table.Cell>{data.toClient}</Table.Cell>
-                              <Table.Cell>
-                                {data.amountInUsd / 10e7} USD
-                              </Table.Cell>
-                              <Table.Cell>
-                                {data.amountInEur / 10e7} EUR
-                              </Table.Cell>
-                              <Table.Cell>{data.reqId}</Table.Cell>
-                              <Table.Cell>
-                                {data.isDepositedToBranch ? (
-                                  <Icon
-                                    color="green"
-                                    name="checkmark"
-                                    size="large"
-                                  />
-                                ) : (
-                                  <Icon color="red" name="close" size="large" />
-                                )}
-                              </Table.Cell>
-                              <Table.Cell>
-                                {data.isDone ? (
-                                  <Icon
-                                    color="green"
-                                    name="checkmark"
-                                    size="large"
-                                  />
-                                ) : (
-                                  <Icon color="red" name="close" size="large" />
-                                )}
-                              </Table.Cell>
-                            </Table.Row>
-                          );
-                        })}
-
-                      {/* false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result  */}
-                    </Table.Body>
-                  </Table>
-                </div>
-
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-              </Tab.Pane>
-            ),
-          },
-          {
-            menuItem: "Lending",
-            render: () => (
-              <Tab.Pane attached={false}>
-                {" "}
-                <div>
-                  <Header as="h2" icon textAlign="center">
-                    <Icon
-                      className="header_content_forex"
-                      name="handshake outline"
-                      circular
-                    />
-                    <Header.Content className="header_content_forex">
-                      Lending{" "}
-                    </Header.Content>
-                  </Header>
-                </div>
-                <Form unstackable>
-                  <Form.Group widths={2}>
-                    <Form.Input
-                      label="Branch Name"
-                      placeholder="0"
-                      type="text"
-                    />
-                    <Form.Input
-                      label="Amount"
-                      placeholder="10..."
-                      type="text"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                    />
-                  </Form.Group>
-
-                  <Button type="submit" onClick={borrow}>
-                    Submit
-                  </Button>
-                </Form>
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <div>
-                  <Header as="h2" icon textAlign="center">
-                    <Header.Content className="header_content_forex">
-                      Lending Statement{" "}
-                    </Header.Content>
-                  </Header>
-
-                  <Table color="black" key={colors}>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
-                        <Table.HeaderCell>Bank Name</Table.HeaderCell>
-                        <Table.HeaderCell>Client Name</Table.HeaderCell>
-                        <Table.HeaderCell>Position ID</Table.HeaderCell>
-                        <Table.HeaderCell>Status</Table.HeaderCell>
-                        <Table.HeaderCell>Clear Loan</Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                      {arrayDataBr.length > 0 &&
-                        arrayDataBr.map((data, index) => {
-                          return (
-                            <Table.Row key={index}>
-                              <Table.Cell>
-                                {data.amountBorrowed / 10e7}
-                              </Table.Cell>
-                              <Table.Cell>
-                                {data.bankId == 0 ? "Europe Bank" : "USD Bank"}
-                              </Table.Cell>
-                              <Table.Cell>
-                                {data.bankId == 0 && data.clientId
-                                  ? "Europe Client"
-                                  : "USD Client"}
-                              </Table.Cell>
-                              <Table.Cell>{data.positionId}</Table.Cell>
-                              <Table.Cell>
-                                {data.isBorrowed ? "True" : "False"}
-                              </Table.Cell>
-                              {data.isClear ? (
-                                <Icon
-                                  color="green"
-                                  name="checkmark"
-                                  size="large"
-                                />
-                              ) : (
-                                <Button basic color="green" onClick={clearLoan}>
-                                  Exit
-                                </Button>
-                              )}
-                            </Table.Row>
-                          );
-                        })}
-                    </Table.Body>
-                  </Table>
-                </div>
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-                <Divider horizontal />
-              </Tab.Pane>
-            ),
-          },
-        ]}
-      />
-
-      {/* <div>
-        <Header as="h2" icon textAlign="center">
-          <Icon className="icon_banking" name="money" circular />
-          <Header.Content className="icon_banking">Forex </Header.Content>
-        </Header>
-      </div> */}
-
-      {/* <Form unstackable>
-        <Form.Group widths={2}>
-          <Form.Input
-            label="Reciever Address"
-            placeholder="0xfsc257d..."
-            type="text"
-            value={clientaddress}
-            onChange={(e) => setClientAddress(e.target.value)}
-          />
-          <Form.Input
-            label="Amount"
-            placeholder="10"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </Form.Group>
-
-        <Button type="submit" onClick={forex}>
-          Submit
-        </Button>
-      </Form>
-      <Divider hidden /> */}
-
-      {/* <div>
-        <Header as="h2" icon textAlign="center">
-          <Header.Content className="header_content_forex">
-            Forex Statement{" "}
-          </Header.Content>
-        </Header>
-
-        <Table color="black" key={colors}>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Receiver Address</Table.HeaderCell>
-              <Table.HeaderCell>Amount USD</Table.HeaderCell>
-              <Table.HeaderCell>Amount EUR</Table.HeaderCell>
-              <Table.HeaderCell>Req ID</Table.HeaderCell>
-              <Table.HeaderCell>Approved</Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
-            {arrayDataF.length > 0 &&
-              arrayDataF.map((data, index) => {
-                console.log(data[index]);
-                return (
-                  <Table.Row key={index}>
-                    <Table.Cell>{data.toClient}</Table.Cell>
-                    <Table.Cell>{data.amountInUsd / 10e7} USD</Table.Cell>
-                    <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
-                    <Table.Cell>{data.reqId}</Table.Cell>
-                    <Table.Cell>
-                      {data.isDepositedToBranch ? (
-                        <Icon color="green" name="checkmark" size="large" />
-                      ) : (
-                        <Icon color="red" name="close" size="large" />
-                      )}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {data.isDone ? (
-                        <Icon color="green" name="checkmark" size="large" />
-                      ) : (
-                        <Icon color="red" name="close" size="large" />
-                      )}
-                    </Table.Cell>
-                  </Table.Row>
-                );
-              })}
-
-            false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result 
-          </Table.Body>
-        </Table>
-      </div>
-      <Divider />  */}
-
-      {/* <div>
-        <Header as="h2" icon textAlign="center">
-          <Icon
-            className="header_content_forex"
-            name="handshake outline"
-            circular
-          />
-          <Header.Content className="header_content_forex">
-            Lending{" "}
-          </Header.Content>
-        </Header>
-      </div> */}
-
-      {/* <Form unstackable>
-        <Form.Group widths={2}>
-          <Form.Input label="Branch ID" placeholder="0" type="text" />
-          <Form.Input
-            label="Amount"
-            placeholder="10..."
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </Form.Group>
-
-   
-        <Button type="submit" onClick={borrow}>
-          Submit
-        </Button>
-      </Form> */}
-      {/* <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal /> */}
-
-      {/* <div>
-        <Header as="h2" icon textAlign="center">
-          <Header.Content className="header_content_forex">
-            Lending Statement{" "}
-          </Header.Content>
-        </Header>
-
-        <Table color="black" key={colors}>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
-              <Table.HeaderCell>Bank ID</Table.HeaderCell>
-              <Table.HeaderCell>Client ID</Table.HeaderCell>
-              <Table.HeaderCell>Position ID</Table.HeaderCell>
-              <Table.HeaderCell>Status</Table.HeaderCell>
-              <Table.HeaderCell>Clear Loan</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-
-          <Table.Body>
-            {arrayDataBr.length > 0 &&
-              arrayDataBr.map((data, index) => {
-                console.log(data[index]);
-                return (
-                  <Table.Row key={index}>
-                    <Table.Cell>{data.amountBorrowed / 10e7}</Table.Cell>
-                    <Table.Cell>{data.bankId}</Table.Cell>
-                    <Table.Cell>{data.clientId}</Table.Cell>
-                    <Table.Cell>{data.positionId}</Table.Cell>
-                    <Table.Cell>
-                      {data.isBorrowed ? "True" : "False"}
-                    </Table.Cell>
-                    {data.isClear ? (
-                      <Icon color="green" name="checkmark" size="large" />
-                    ) : (
-                      <Button basic color="green" onClick={clearLoan}>
-                        Exit
+                      {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
+                      <Button type="submit" onClick={forex}>
+                        Submit
                       </Button>
-                    )}
-                  </Table.Row>
-                );
-              })}
+                    </Form>
+                    <Divider hidden />
+                    <div>
+                      <Header as="h2" icon textAlign="center">
+                        <Header.Content className="header_content_forex">
+                          Forex Statement{" "}
+                        </Header.Content>
+                      </Header>
 
-  
-          </Table.Body>
-        </Table>
-      </div>
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal />
-      <Divider horizontal /> */}
+                      <Table color="black" key={colors}>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell>
+                              Receiver Address
+                            </Table.HeaderCell>
+                            <Table.HeaderCell>Amount USD</Table.HeaderCell>
+                            <Table.HeaderCell>Amount EUR</Table.HeaderCell>
+                            <Table.HeaderCell>Req ID</Table.HeaderCell>
+                            <Table.HeaderCell>Approved</Table.HeaderCell>
+                            <Table.HeaderCell>Status</Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
 
-      <div>
-        <Divider horizontal />
+                        <Table.Body>
+                          {arrayDataF.length > 0 &&
+                            arrayDataF.map((data, index) => {
+                              console.log(data[index]);
+                              return (
+                                <Table.Row key={index}>
+                                  <Table.Cell>{data.toClient}</Table.Cell>
+                                  <Table.Cell>
+                                    {data.amountInUsd / 10e7} USD
+                                  </Table.Cell>
+                                  <Table.Cell>
+                                    {data.amountInEur / 10e7} EUR
+                                  </Table.Cell>
+                                  <Table.Cell>{data.reqId}</Table.Cell>
+                                  <Table.Cell>
+                                    {data.isDepositedToBranch ? (
+                                      <Icon
+                                        color="green"
+                                        name="checkmark"
+                                        size="large"
+                                      />
+                                    ) : (
+                                      <Icon
+                                        color="red"
+                                        name="close"
+                                        size="large"
+                                      />
+                                    )}
+                                  </Table.Cell>
+                                  <Table.Cell>
+                                    {data.isDone ? (
+                                      <Icon
+                                        color="green"
+                                        name="checkmark"
+                                        size="large"
+                                      />
+                                    ) : (
+                                      <Icon
+                                        color="red"
+                                        name="close"
+                                        size="large"
+                                      />
+                                    )}
+                                  </Table.Cell>
+                                </Table.Row>
+                              );
+                            })}
 
-        <Segment
-          className="banking_footer"
-          inverted
-          vertical
-          style={{ padding: "0em 0em" }}
-        >
-          <Container>
-            <Grid divided inverted stackable>
-              <Grid.Row>
-                <Grid.Column width={3}>
-                  <Header inverted as="h4" content="About" />
-                  <List link inverted>
-                    <List.Item as="a">Sitemap</List.Item>
-                    <List.Item as="a">Contact Us</List.Item>
-                    <List.Item as="a">Crypto meets</List.Item>
-                    <List.Item as="a">Future Plans</List.Item>
-                  </List>
-                </Grid.Column>
-                <Grid.Column width={3}>
-                  <Header inverted as="h4" content="Services" />
-                  <List link inverted>
-                    <List.Item as={Link} to="/banking">
-                      Decentralized Forex
-                    </List.Item>
-                    <List.Item as="a">Lending</List.Item>
-                    <List.Item as="a">Transfer</List.Item>
-                    <List.Item as="a"> Token Swap</List.Item>
-                  </List>
-                </Grid.Column>
-                <Grid.Column width={3}>
-                  <Header as="h4" inverted>
-                    Trust and Security
-                  </Header>
-                  <p>
-                    We Served Our Customer Since The start of the Blockchain
-                    Technology.
-                  </p>
-                </Grid.Column>
-                <Grid.Column width={3}>
-                  <Header as="h4" inverted>
-                    Trust and Security
-                  </Header>
-                  <p>
-                    We Served Our Customer Since The start of the Blockchain
-                    Technology.
-                  </p>
-                </Grid.Column>
-                <Grid.Column width={3}>
-                  <Header as="h4" inverted>
-                    Trust and Security
-                  </Header>
-                  <p>
-                    We Served Our Customer Since The start of the Blockchain
-                    Technology.
-                  </p>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Container>
-        </Segment>
-      </div>
-    </div>
+                          {/* false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result  */}
+                        </Table.Body>
+                      </Table>
+                    </div>
+
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                  </Tab.Pane>
+                ),
+              },
+              {
+                menuItem: "Lending",
+                render: () => (
+                  <Tab.Pane attached={false}>
+                    {" "}
+                    <div>
+                      <Header as="h2" icon textAlign="center">
+                        <Icon
+                          className="header_content_forex"
+                          name="handshake outline"
+                          circular
+                        />
+                        <Header.Content className="header_content_forex">
+                          Lending{" "}
+                        </Header.Content>
+                      </Header>
+                    </div>
+                    <Form unstackable>
+                      <Form.Group widths={2}>
+                        <Form.Input
+                          label="Branch Name"
+                          placeholder="0"
+                          type="text"
+                        />
+                        <Form.Input
+                          label="Amount"
+                          placeholder="10..."
+                          type="text"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                        />
+                      </Form.Group>
+
+                      <Button type="submit" onClick={borrow}>
+                        Submit
+                      </Button>
+                    </Form>
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <div>
+                      <Header as="h2" icon textAlign="center">
+                        <Header.Content className="header_content_forex">
+                          Lending Statement{" "}
+                        </Header.Content>
+                      </Header>
+
+                      <Table color="black" key={colors}>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
+                            <Table.HeaderCell>Bank Name</Table.HeaderCell>
+                            <Table.HeaderCell>Client Name</Table.HeaderCell>
+                            <Table.HeaderCell>Position ID</Table.HeaderCell>
+                            <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Clear Loan</Table.HeaderCell>
+                          </Table.Row>
+                        </Table.Header>
+
+                        <Table.Body>
+                          {arrayDataBr.length > 0 &&
+                            arrayDataBr.map((data, index) => {
+                              return (
+                                <Table.Row key={index}>
+                                  <Table.Cell>
+                                    {data.amountBorrowed / 10e7}
+                                  </Table.Cell>
+                                  <Table.Cell>
+                                    {data.bankId == 0
+                                      ? "Europe Bank"
+                                      : "USD Bank"}
+                                  </Table.Cell>
+                                  <Table.Cell>
+                                    {data.bankId == 0 && data.clientId
+                                      ? "Europe Client"
+                                      : "USD Client"}
+                                  </Table.Cell>
+                                  <Table.Cell>{data.positionId}</Table.Cell>
+                                  <Table.Cell>
+                                    {data.isBorrowed ? "True" : "False"}
+                                  </Table.Cell>
+                                  {data.isClear ? (
+                                    <Icon
+                                      color="green"
+                                      name="checkmark"
+                                      size="large"
+                                    />
+                                  ) : (
+                                    <Button
+                                      basic
+                                      color="green"
+                                      onClick={clearLoan}
+                                    >
+                                      Exit
+                                    </Button>
+                                  )}
+                                </Table.Row>
+                              );
+                            })}
+                        </Table.Body>
+                      </Table>
+                    </div>
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                    <Divider horizontal />
+                  </Tab.Pane>
+                ),
+              },
+            ]}
+          />
+
+          {/* <div>
+    <Header as="h2" icon textAlign="center">
+      <Icon className="icon_banking" name="money" circular />
+      <Header.Content className="icon_banking">Forex </Header.Content>
+    </Header>
+  </div> */}
+
+          {/* <Form unstackable>
+    <Form.Group widths={2}>
+      <Form.Input
+        label="Reciever Address"
+        placeholder="0xfsc257d..."
+        type="text"
+        value={clientaddress}
+        onChange={(e) => setClientAddress(e.target.value)}
+      />
+      <Form.Input
+        label="Amount"
+        placeholder="10"
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+    </Form.Group>
+
+    <Button type="submit" onClick={forex}>
+      Submit
+    </Button>
+  </Form>
+  <Divider hidden /> */}
+
+          {/* <div>
+    <Header as="h2" icon textAlign="center">
+      <Header.Content className="header_content_forex">
+        Forex Statement{" "}
+      </Header.Content>
+    </Header>
+
+    <Table color="black" key={colors}>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell>Receiver Address</Table.HeaderCell>
+          <Table.HeaderCell>Amount USD</Table.HeaderCell>
+          <Table.HeaderCell>Amount EUR</Table.HeaderCell>
+          <Table.HeaderCell>Req ID</Table.HeaderCell>
+          <Table.HeaderCell>Approved</Table.HeaderCell>
+          <Table.HeaderCell>Status</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+
+      <Table.Body>
+        {arrayDataF.length > 0 &&
+          arrayDataF.map((data, index) => {
+            console.log(data[index]);
+            return (
+              <Table.Row key={index}>
+                <Table.Cell>{data.toClient}</Table.Cell>
+                <Table.Cell>{data.amountInUsd / 10e7} USD</Table.Cell>
+                <Table.Cell>{data.amountInEur / 10e7} EUR</Table.Cell>
+                <Table.Cell>{data.reqId}</Table.Cell>
+                <Table.Cell>
+                  {data.isDepositedToBranch ? (
+                    <Icon color="green" name="checkmark" size="large" />
+                  ) : (
+                    <Icon color="red" name="close" size="large" />
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  {data.isDone ? (
+                    <Icon color="green" name="checkmark" size="large" />
+                  ) : (
+                    <Icon color="red" name="close" size="large" />
+                  )}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
+
+        false displayed for data.isDOne as initially forexrequest put a false in the local store now when i rretrie it gives the same old result 
+      </Table.Body>
+    </Table>
+  </div>
+  <Divider />  */}
+
+          {/* <div>
+    <Header as="h2" icon textAlign="center">
+      <Icon
+        className="header_content_forex"
+        name="handshake outline"
+        circular
+      />
+      <Header.Content className="header_content_forex">
+        Lending{" "}
+      </Header.Content>
+    </Header>
+  </div> */}
+
+          {/* <Form unstackable>
+    <Form.Group widths={2}>
+      <Form.Input label="Branch ID" placeholder="0" type="text" />
+      <Form.Input
+        label="Amount"
+        placeholder="10..."
+        type="text"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+    </Form.Group>
+
+
+    <Button type="submit" onClick={borrow}>
+      Submit
+    </Button>
+  </Form> */}
+          {/* <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal /> */}
+
+          {/* <div>
+    <Header as="h2" icon textAlign="center">
+      <Header.Content className="header_content_forex">
+        Lending Statement{" "}
+      </Header.Content>
+    </Header>
+
+    <Table color="black" key={colors}>
+      <Table.Header>
+        <Table.Row>
+          <Table.HeaderCell>Borrowed Amount</Table.HeaderCell>
+          <Table.HeaderCell>Bank ID</Table.HeaderCell>
+          <Table.HeaderCell>Client ID</Table.HeaderCell>
+          <Table.HeaderCell>Position ID</Table.HeaderCell>
+          <Table.HeaderCell>Status</Table.HeaderCell>
+          <Table.HeaderCell>Clear Loan</Table.HeaderCell>
+        </Table.Row>
+      </Table.Header>
+
+      <Table.Body>
+        {arrayDataBr.length > 0 &&
+          arrayDataBr.map((data, index) => {
+            console.log(data[index]);
+            return (
+              <Table.Row key={index}>
+                <Table.Cell>{data.amountBorrowed / 10e7}</Table.Cell>
+                <Table.Cell>{data.bankId}</Table.Cell>
+                <Table.Cell>{data.clientId}</Table.Cell>
+                <Table.Cell>{data.positionId}</Table.Cell>
+                <Table.Cell>
+                  {data.isBorrowed ? "True" : "False"}
+                </Table.Cell>
+                {data.isClear ? (
+                  <Icon color="green" name="checkmark" size="large" />
+                ) : (
+                  <Button basic color="green" onClick={clearLoan}>
+                    Exit
+                  </Button>
+                )}
+              </Table.Row>
+            );
+          })}
+
+
+      </Table.Body>
+    </Table>
+  </div>
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal />
+  <Divider horizontal /> */}
+
+          {/* <div>
+    <Divider horizontal />
+
+    <Segment
+      className="banking_footer"
+      inverted
+      vertical
+      style={{ padding: "0em 0em" }}
+    >
+      <Container>
+        <Grid divided inverted stackable>
+          <Grid.Row>
+            <Grid.Column width={3}>
+              <Header inverted as="h4" content="About" />
+              <List link inverted>
+                <List.Item as="a">Sitemap</List.Item>
+                <List.Item as="a">Contact Us</List.Item>
+                <List.Item as="a">Crypto meets</List.Item>
+                <List.Item as="a">Future Plans</List.Item>
+              </List>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <Header inverted as="h4" content="Services" />
+              <List link inverted>
+                <List.Item as={Link} to="/banking">
+                  Decentralized Forex
+                </List.Item>
+                <List.Item as="a">Lending</List.Item>
+                <List.Item as="a">Transfer</List.Item>
+                <List.Item as="a"> Token Swap</List.Item>
+              </List>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <Header as="h4" inverted>
+                Trust and Security
+              </Header>
+              <p>
+                We Served Our Customer Since The start of the Blockchain
+                Technology.
+              </p>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <Header as="h4" inverted>
+                Trust and Security
+              </Header>
+              <p>
+                We Served Our Customer Since The start of the Blockchain
+                Technology.
+              </p>
+            </Grid.Column>
+            <Grid.Column width={3}>
+              <Header as="h4" inverted>
+                Trust and Security
+              </Header>
+              <p>
+                We Served Our Customer Since The start of the Blockchain
+                Technology.
+              </p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Container>
+    </Segment>
+  </div> */}
+        </div>
+      ) : (
+        <Message icon>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Wrong Account!!!</Message.Header>
+            Please Change Your Account
+          </Message.Content>
+        </Message>
+      )}
+    </>
   );
 }
 export default Banking;

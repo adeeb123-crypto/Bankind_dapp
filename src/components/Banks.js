@@ -12,7 +12,10 @@ import {
   Divider,
   Table,
   Breadcrumb,
+  Menu,
+  Message,
 } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
 import { contractAddressbnksys, ABIbnksys } from "../constants";
@@ -30,8 +33,10 @@ function Banks() {
   const [centralbankid, setCentralBankID] = useState("");
   const [bankAdded, setBankAdded] = useState(false);
   const [arrayData, setArrayData] = useState([]);
+  const [isCorrAcc, setIsCorrAcc] = useState(false);
 
   useEffect(() => {
+    checkDetails();
     if (bankAdded) {
       setBankAdded(true);
     } else {
@@ -83,7 +88,7 @@ function Banks() {
         let address = web3eth.givenProvider.selectedAddress;
         console.log("address", address);
 
-        if (bankid =="Europe Bank") {
+        if (bankid == "Europe Bank") {
           setTokenSymbol("EUR");
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, amount * 100000000)
@@ -145,88 +150,193 @@ function Banks() {
     }
   }
 
+  async function checkDetails() {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.enable();
+        // console.log("accounts", accounts);
+        const provider = await new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        const signer = await provider.getSigner();
+        // console.log("Signer", signer);
+        const address = await signer.getAddress();
+        // console.log(address);
+      } else {
+        console.log("MemtaMask Not Installed Maen");
+      }
+      const web3eth = new Web3(Web3.givenProvider);
+
+      const callContract = new web3eth.eth.Contract(
+        ABIbnksys,
+        contractAddressbnksys
+      );
+      const callContractECB = new web3eth.eth.Contract(
+        ABIEcb,
+        contractAddressEcb
+      );
+      const callContractFED = new web3eth.eth.Contract(
+        ABIFed,
+        contractAddressFed
+      );
+      if (web3eth.givenProvider) {
+        // console.log("Hello Provider Here", web3eth.givenProvider);
+        let address = web3eth.givenProvider.selectedAddress;
+        // console.log("address", address);
+
+        const formattedMetamaskAddress =
+          web3eth.utils.toChecksumAddress(address);
+
+        let IDByAddress = await callContract.methods
+          .idOfAddress(address)
+          .call();
+
+        let branchAddress = await callContract.methods
+          .branches(IDByAddress.bankId, IDByAddress.branchId)
+          .call();
+
+        if (branchAddress.bank === formattedMetamaskAddress) {
+          setIsCorrAcc(true);
+          if (IDByAddress.bankId == 0) {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let branchAddress = await callContract.methods
+              .branches(IDByAddress.bankId, IDByAddress.branchId)
+              .call();
+          } else {
+            let IDByAddress = await callContract.methods
+              .idOfAddress(address)
+              .call();
+
+            let balanceOf = await callContractFED.methods
+              .balanceOf(address)
+              .call();
+          }
+        } else {
+          setIsCorrAcc(false);
+        }
+      }
+    } catch (error) {
+      console.log(Error);
+    }
+  }
+
   return (
-    <div className="main_page_bg">
-      <div>
-        <Header as="h2" icon textAlign="center">
-          <Icon className="icon_banks" name="building outline" circular />
-          <Header.Content className="header_content_bank"> Bank</Header.Content>
-        </Header>
-      </div>
+    <>
+      {isCorrAcc ? (
+        <>
+          <div className="main_page_bg">
+            <Menu pagination>
+              <Menu.Item as={Link} to="/">
+                Home
+              </Menu.Item>
+              <Menu.Item as={Link} to="/banks">
+                Bank
+              </Menu.Item>
+              <Menu.Item as={Link} to="/branch">
+                Branch
+              </Menu.Item>
+              <Menu.Item as={Link} to="/banking">
+                Client
+              </Menu.Item>
+            </Menu>
+            <div>
+              <Header as="h2" icon textAlign="center">
+                {/* <Icon className="icon_banks" name="building outline" circular /> */}
+                <Header.Content className="header_content_bank">
+                  {" "}
+                  Bank
+                </Header.Content>
+              </Header>
+            </div>
 
-      <div>
-      <Form unstackable>
-        
-        <Form.Group widths={2}>
-          <Form.Input
-            label="Branch Address"
-            placeholder="0xfsc257d..."
-            type="text"
-            value={branchaddress}
-            onChange={(e) => setBranchAddress(e.target.value)}
-          />
-          <Form.Input
-            label="Amount"
-            placeholder="1000..."
-            type="text"
-           
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          <Form.Input
-            label="Bank Name"
-            placeholder="0"
-            type="text"
-            
-            value={bankid}
-            onChange={(e) => setBankID(e.target.value)}
-          />
-        </Form.Group>
-        
+            <div>
+              <Form unstackable>
+                <Form.Group widths={2}>
+                  <Form.Input
+                    label="Branch Address"
+                    placeholder="0xfsc257d..."
+                    type="text"
+                    value={branchaddress}
+                    onChange={(e) => setBranchAddress(e.target.value)}
+                  />
+                  <Form.Input
+                    label="Amount"
+                    placeholder="1000..."
+                    type="text"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <Form.Input
+                    label="Bank Name"
+                    placeholder="0"
+                    type="text"
+                    value={bankid}
+                    onChange={(e) => setBankID(e.target.value)}
+                  />
+                </Form.Group>
 
-        <Button primary type="submit" onClick={addbranch}>
-          Submit
-        </Button>
-      </Form>
-      </div>
-      
-      <Divider />
-      <div>
-        <Table color="black" key={colors} >
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Branch Address</Table.HeaderCell>
-              <Table.HeaderCell>Amount</Table.HeaderCell>
-              <Table.HeaderCell>Approved</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
+                <Button primary type="submit" onClick={addbranch}>
+                  Submit
+                </Button>
+              </Form>
+            </div>
 
-          <Table.Body>
-            {arrayData.length > 0 &&
-              arrayData.map((data, index) => {
-                console.log(data[index]);
-                return (
-                  <Table.Row key={index}>
-                    <Table.Cell>{data.branch}</Table.Cell>
-                    <Table.Cell>
-                      {data.amount / 10e7} {data.tokenSymbol}
-                    </Table.Cell>
-                    <Table.Cell>{data.status ? "True" : "True"}</Table.Cell>
+            <Divider horizontal />
+            <div>
+              <Table color="black" key={colors}>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Branch Address</Table.HeaderCell>
+                    <Table.HeaderCell>Amount</Table.HeaderCell>
+                    <Table.HeaderCell>Approved</Table.HeaderCell>
                   </Table.Row>
-                );
-              })}
-          </Table.Body>
-        </Table>
-      </div>
+                </Table.Header>
 
-      <div>
-        {/* <Segment inverted>
+                <Table.Body>
+                  {arrayData.length > 0 &&
+                    arrayData.map((data, index) => {
+                      console.log(data[index]);
+                      return (
+                        <Table.Row key={index}>
+                          <Table.Cell>{data.branch}</Table.Cell>
+                          <Table.Cell>
+                            {data.amount / 10e7} {data.tokenSymbol}
+                          </Table.Cell>
+                          <Table.Cell>
+                            {data.status ? "True" : "True"}
+                          </Table.Cell>
+                        </Table.Row>
+                      );
+                    })}
+                </Table.Body>
+              </Table>
+            </div>
+
+            <div>
+              {/* <Segment inverted>
     <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
     <Divider inverted />
 
   </Segment> */}
-      </div>
-    </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <Message icon>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Wrong Account!!!</Message.Header>
+            Please Change Your Account
+          </Message.Content>
+        </Message>
+      )}
+    </>
   );
 }
 export default Banks;

@@ -227,7 +227,7 @@ function Forex() {
 
               <div>
                 <Grid reversed="computer" columns="equal">
-                  <Grid.Row color="white">
+                  <Grid.Row color="gainsboro">
                     <Grid.Column>
                       Amount USD
                       <Grid.Column>
@@ -253,7 +253,7 @@ function Forex() {
                       </Grid.Column>
                     </Grid.Column>
                   </Grid.Row>
-                  <Grid.Row color="white">
+                  <Grid.Row color="gainsboro">
                     <Grid.Column>
                       Done
                       <Grid.Column>
