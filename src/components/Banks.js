@@ -245,12 +245,18 @@ function Banks() {
                 Client
               </Menu.Item>
             </Menu>
+            <Divider horizontal/>
+            <Divider horizontal/>
+            <Divider horizontal/>
+            <Divider horizontal/>
+            <Divider horizontal/>
+            <Divider horizontal/>
             <div>
               <Header as="h2" icon textAlign="center">
                 {/* <Icon className="icon_banks" name="building outline" circular /> */}
                 <Header.Content className="header_content_bank">
                   {" "}
-                  Bank
+                  BANK
                 </Header.Content>
               </Header>
             </div>
@@ -304,7 +310,7 @@ function Banks() {
                       console.log(data[index]);
                       return (
                         <Table.Row key={index}>
-                          <Table.Cell>{data.branch}</Table.Cell>
+                          <Table.Cell>{data.branch.slice(0,6)+"..."+data.branch.slice(36,42)}</Table.Cell>
                           <Table.Cell>
                             {data.amount / 10e7} {data.tokenSymbol}
                           </Table.Cell>
@@ -328,6 +334,7 @@ function Banks() {
           </div>
         </>
       ) : (
+        <div className="acc_msg_box">
         <Message icon>
           <Icon name="circle notched" loading />
           <Message.Content>
@@ -335,6 +342,7 @@ function Banks() {
             Please Change Your Account
           </Message.Content>
         </Message>
+        </div>
       )}
     </>
   );

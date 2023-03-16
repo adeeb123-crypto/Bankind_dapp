@@ -71,9 +71,9 @@ function Borrow() {
                 Branch
                 <Grid.Column>
                   {" "}
-                  {data.branchId == 0 && data.bankId == 1
-                    ? "Europe Branch"
-                    : "USD Branch"}
+                  {data.bankId == 1
+                    ? "USD Branch"
+                    : "Europe Branch"}
                 </Grid.Column>
               </Grid.Column>
               <Grid.Column>
@@ -85,7 +85,7 @@ function Borrow() {
               </Grid.Column>
               <Grid.Column>
                 Last Updated
-                <Grid.Column>{date}</Grid.Column>
+                <Grid.Column>{new Date(data.timeStamp * 1000).toLocaleString()}</Grid.Column>
               </Grid.Column>
             </Grid.Row>
             <Grid.Row color="gainsboro">
@@ -201,11 +201,13 @@ function Borrow() {
           setArrayData(tmp_data);
           window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
           console.log("arrydata", arrayData);
-          const unixTimestamp = arrayData[0].timeStamp;
+          const unixTimestamp = arrayData[arrayData.length - 1].timeStamp;
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
           console.log("Humandate:", humanDate);
-          setDate(humanDate);
+          const date_temp = date
+          date_temp.push(humanDate)
+          setDate(date_temp);
         } else {
           setTokenSymbol("USD");
 
@@ -234,7 +236,9 @@ function Borrow() {
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
           console.log("Humandate:", humanDate);
-          setDate(humanDate);
+          const date_temp = date
+          date_temp.push(humanDate)
+          setDate(date_temp);
         }
       }
     } catch (error) {

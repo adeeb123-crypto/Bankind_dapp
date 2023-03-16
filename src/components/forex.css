@@ -11,6 +11,11 @@
     padding-left: 40px;
     padding-top: 10px;
     padding-bottom: 5px;
+    margin-right: 3rem;
+  }
+
+  .ui.grid>*{
+    padding-right: 2rem !important;
   }
 
   .banking_page_bg{

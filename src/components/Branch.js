@@ -1238,7 +1238,7 @@ function Branch() {
               />
             </Form.Group>
 
-            <Button type="submit" onClick={addClient}>
+            <Button primary type="submit" onClick={addClient}>
               Submit
             </Button>
           </Form>
@@ -1260,7 +1260,7 @@ function Branch() {
                   arrayData.map((data, index) => {
                     return (
                       <Table.Row key={index}>
-                        <Table.Cell>{data.client}</Table.Cell>
+                        <Table.Cell>{data.client.slice(0,4)+"..."+data.client.slice(38,42)}</Table.Cell>
                         <Table.Cell>
                           {data.amount / 10e7} {data.tokenSymbol}
                         </Table.Cell>
@@ -1306,7 +1306,7 @@ function Branch() {
                       Pending Forex Requests
                     </Header.Content>
                   </Header>
-                  <Button primary onClick={checkForexRequest}>
+                  <Button className="view_req_branch_btn" primary onClick={checkForexRequest}>
                     View Requests
                   </Button>
                   <Button color="grey" onClick={() => navigate("/forex")}>
@@ -1346,6 +1346,7 @@ function Branch() {
                                   {data.amountInUsd / data.amountInEur}
                                 </Card.Description>
                                 <Button
+                                className="approve_btn_branch"
                                   basic
                                   color="green"
                                   onClick={processForexRequestBranch}
@@ -1473,7 +1474,7 @@ function Branch() {
                       Pending Borrow Requests
                     </Header.Content>
                   </Header>
-                  <Button primary onClick={checkBorrowRequest}>
+                  <Button className="view_req_branch_btn" primary onClick={checkBorrowRequest}>
                     View Requests
                   </Button>
                   <Button color="grey" onClick={() => navigate("/borrow")}>
@@ -1492,7 +1493,7 @@ function Branch() {
                                 Borrow Request: {data.positionId}{" "}
                               </Card.Header>
                               <Card.Meta>
-                                Amount {data.amountBorrowed / 10e7} USD
+                                Amount {data.amountBorrowed / 10e7} {data.bankId == 0 ? 'EUR' : 'USD'}
                               </Card.Meta>
                               <Card.Meta>
                                 Status{" "}
@@ -1510,9 +1511,10 @@ function Branch() {
                                 Interest Rate {10} %
                               </Card.Description>
                               {data.isDone ? (
-                                <Button color="green">Approved</Button>
+                                <Button className="approve_btn_branch" color="green">Approved</Button>
                               ) : (
                                 <Button
+                                className="approve_btn_branch"
                                   basic
                                   color="green"
                                   onClick={processLoan}
