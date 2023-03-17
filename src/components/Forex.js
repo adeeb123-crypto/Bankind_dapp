@@ -1,17 +1,16 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Button, Form } from "semantic-ui-react";
+
 import {
   Header,
   Icon,
-  Image,
-  Segment,
+
   Divider,
   Table,
-  Breadcrumb,
+
   Grid,
-  Card,
+
   Accordion,
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
