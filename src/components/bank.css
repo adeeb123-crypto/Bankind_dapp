@@ -16,3 +16,15 @@
 .header_cell_bank{
     color: gainsboro;
 }
+
+@media screen and (max-width: 1480px){
+
+  .main_page_bg {
+    padding-left: 400px !important;
+    padding-right: 400px !important;
+  }
+
+
+
+
+}

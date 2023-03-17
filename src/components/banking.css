@@ -39,11 +39,11 @@
   /* justify-content: end !important; */
 }
 
-@media screen and (min-width: 90rem){
+/* @media screen and (min-width: 90rem){
   .ui.form{
     height:50%;
   }
-}
+} */
 
 .ui.form .fields {
   display: grid;
@@ -104,6 +104,10 @@ form {
   
 }
 
+.ui.primary.button{
+  margin-left: 120px;
+}
+
 .ui.secondary.button.button_banking {
   background-color: gainsboro;
   color: gray;
@@ -134,7 +138,104 @@ form {
 }
 
 
-.ui.primary.button{
+.ui.primary.button.view_req_branch_btn{
   display: flex !important;
   justify-content: center !important;
+  margin-left: 200px;
+
+}
+
+.ui.grey.button{
+  margin-top: 30px;
+    display: flex !important;
+    justify-content: center !important;
+    margin-left: 200px;
+}
+/* 
+.ui.green.button, .ui.green.buttons .button {
+
+  margin-left: 80px
+} */
+
+
+
+
+.ui.green.button.exit_btn_loan, .ui.green.buttons .button{
+  margin-left: 0px
+}
+
+
+
+
+@media screen and (max-width: 413px){
+
+
+
+  .main_page_bg{
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .ui.form input:not([type]),
+.ui.form input[type="date"],
+.ui.form input[type="datetime-local"],
+.ui.form input[type="email"],
+.ui.form input[type="file"],
+.ui.form input[type="number"],
+.ui.form input[type="password"],
+.ui.form input[type="search"],
+.ui.form input[type="tel"],
+.ui.form input[type="text"],
+.ui.form input[type="time"],
+.ui.form input[type="url"] {
+    
+  width: 500px !important;
+  padding: 10px;
+
+}
+
+.ui.form .fields{
+  padding-top: 0px;
+  padding-left: 50px;
+}
+.ui.primary.button{
+  margin-top: 30px;
+  margin-left: 120px !important;
+}
+
+.ui.black.table{
+  margin-right: 20px ;
+}
+}
+
+.banking_pg_btn{
+
+  margin-left: 200px !important;
+
+}
+
+/* can change this according to laptop  */
+@media screen and (max-width: 1480px){
+
+  .banking_page_bg{
+    padding-left: 400px !important;
+    padding-right: 400px !important;
+  }
+
+  .ui.message{
+    margin-left: 450px !important;
+    margin-top: 100px !important
+
+    
+
+}
+
+  .ui.icon.message{
+    height: 150px !important;
+    font-size: large;
+    background-color: gainsboro;
+    border-radius: 30px;
+    position: relative;
+}
+
 }

@@ -8,6 +8,8 @@ import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 import Banks from "./Banks";
 import "./homepagelayout.css";
+import mobilePaymentImage  from "../assets/mobile-payment.png"
+import bank_img from "../assets/bank_img.jpg"
 // import "./graphics.css";
 
 import { useNavigate } from "react-router-dom";
@@ -64,10 +66,11 @@ const HomepageHeading = ({ mobile }) => (
       </div>
       <div className="shadow"></div>
     </div> */}
-
+  <div className="h1_circle">
+    
     <Header
       as="h1"
-      content="Your -Decentralized Banking System"
+      content="Your-Decentralized Banking System"
       inverted
       style={{
         fontSize: mobile ? "2em" : "4em",
@@ -76,6 +79,10 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? "1.5em" : "3em",
       }}
     />
+    </div>
+    <div>
+    <Image src={"https://global-uploads.webflow.com/6336e79cd8d43cd4d1230849/63db890c7078928309216caf_hero-img-p-800.png"} />
+    </div>
     <Header
       as="h2"
       content="Trusted and Secure Banking Services."
@@ -86,10 +93,7 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? "0.5em" : "1.5em",
       }}
     />
-    <Button primary size="huge">
-      Welcome
-      <Icon name="right arrow" />
-    </Button>
+
   </Container>
 );
 
@@ -166,6 +170,7 @@ class DesktopContainer extends Component {
             style={{ minHeight: 700, padding: "1em 0em" }}
             vertical
           >
+           
             <Menu
               fixed={fixed ? "top" : null}
               inverted={!fixed}
@@ -173,6 +178,7 @@ class DesktopContainer extends Component {
               secondary={!fixed}
               size="large"
             >
+               <Image className="img_home" src={mobilePaymentImage} size='small' />
               <Container>
                 <Menu.Item as={Link} to="/bankreserve">
                   Reserve Bank

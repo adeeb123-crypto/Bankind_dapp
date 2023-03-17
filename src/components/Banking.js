@@ -48,6 +48,7 @@ function Banking() {
   const [bankName, setBankName] = useState("");
   const [checkClient, setCheckClient] = useState("");
   const [isCorrAcc, setIsCorrAcc] = useState(false);
+  const [clientAmt, setClientAmt] = useState("");
 
   useEffect(() => {
     // someForexDets()
@@ -77,7 +78,7 @@ function Banking() {
       setArrayDataLoanDet(temp_dataLoan_Det);
     }
 
-    getAddress();
+    // getAddress();
 
     // window.localStorage.clear();
   }, [arrayDataF, arrayDataBr, arrayDataloan]);
@@ -129,6 +130,8 @@ function Banking() {
         let branchAddress = await callContract.methods
           .clients(IDByAddress.bankId, IDByAddress.branchId)
           .call();
+
+          setClientAmt(branchAddress.amount)
 
         if (branchAddress.client === formattedMetamaskAddress) {
           setIsCorrAcc(true);
@@ -901,7 +904,7 @@ function Banking() {
             {isconnected ? (
               <></>
             ) : (
-              <Button className="button_banking" primary onClick={giveDetails}>
+              <Button className="banking_pg_btn" primary type="submit"  onClick={giveDetails}>
                 Connect
               </Button>
             )}
@@ -923,7 +926,7 @@ function Banking() {
                 <Card.Content extra>
                   <a>
                     <Icon name="money bill alternate outline" />
-                    {1000} EUR
+                   {clientAmt /10e7}
                   </a>
                 </Card.Content>
               </Card>
@@ -968,7 +971,7 @@ function Banking() {
                       </Form.Group>
 
                       {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
-                      <Button type="submit" onClick={forex}>
+                      <Button primary type="submit"  onClick={forex}>
                         Submit
                       </Button>
                     </Form>
@@ -1089,7 +1092,7 @@ function Banking() {
                       <Form.Group widths={2}>
                         <Form.Input
                           label="Branch Name"
-                          placeholder="0"
+                          placeholder="Europe Branch..."
                           type="text"
                         />
                         <Form.Input
@@ -1101,7 +1104,7 @@ function Banking() {
                         />
                       </Form.Group>
 
-                      <Button type="submit" onClick={borrow}>
+                      <Button primary type="submit" onClick={borrow}>
                         Submit
                       </Button>
                     </Form>
@@ -1123,7 +1126,7 @@ function Banking() {
                             <Table.HeaderCell>Bank Name</Table.HeaderCell>
                             <Table.HeaderCell>Client Name</Table.HeaderCell>
                             <Table.HeaderCell>Position ID</Table.HeaderCell>
-                            <Table.HeaderCell>Status</Table.HeaderCell>
+                            <Table.HeaderCell>Borrowed</Table.HeaderCell>
                             <Table.HeaderCell>Clear Loan</Table.HeaderCell>
                           </Table.Row>
                         </Table.Header>
@@ -1158,6 +1161,7 @@ function Banking() {
                                     />
                                   ) : (
                                     <Button
+                                    className="exit_btn_loan"
                                       basic
                                       color="green"
                                       onClick={clearLoan}

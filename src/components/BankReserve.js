@@ -183,7 +183,7 @@ function BankReserve() {
         </Form.Group>
 
         {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
-        <Button type="submit" onClick={addbank}>
+        <Button primary type="submit" onClick={addbank}>
           Submit
         </Button>
       </Form>
@@ -205,7 +205,7 @@ function BankReserve() {
               arrayData.map((data, index) => {
                 return (
                   <Table.Row key={index}>
-                    <Table.Cell>{data.bank}</Table.Cell>
+                    <Table.Cell>{data.bank?.slice(0,6)+"..."+data.bank?.slice(36,42)}</Table.Cell>
                     <Table.Cell>
                       {data.amount / 10e7} {data.tokenSymbol}
                     </Table.Cell>

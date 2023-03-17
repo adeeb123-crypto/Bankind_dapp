@@ -1,45 +1,53 @@
-.bank_reserve_page{
-    background-color: #18122B;
-     height:100vh;
-     padding-left: 700px;
-     padding-right: 700px;
-     text-align: end !important;
+.bank_reserve_page {
+  background-color: #18122b;
+  height: 100vh;
+  padding-left: 700px;
+  padding-right: 700px;
+  text-align: end !important;
 }
 
-.icon_bankreserve{
-    color: gainsboro;
+.icon_bankreserve {
+  color: gainsboro;
 }
 
-.header_content_bankreserve{
-    color: gainsboro;
+.header_content_bankreserve {
+  color: gainsboro;
 }
 
-.bankreserve_img{
-    opacity: 0.6;
-    display: flex;
-    align-items: center;
-    margin-top: 100px;
-    border-radius: 50px;
-    height: 200px;
-    width: 200px;
+.bankreserve_img {
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  margin-top: 100px;
+  border-radius: 50px;
+  height: 200px;
+  width: 200px;
 }
 
-.ui.menu{
-    margin-top: 5rem;
-    
-    padding-left: auto !important;
-    padding-right: auto !important;
-    margin: 0rem !important;
-    display: flex;
-    text-align: center;
-    align-items: center;
+.ui.menu {
+  margin-top: 5rem;
+
+  padding-left: auto !important;
+  padding-right: auto !important;
+  margin: 0rem !important;
+  display: flex;
+  text-align: center;
+  align-items: center;
 }
 
-.ui.pagination.menu{
+.ui.pagination.menu {
+  margin-top: 1rem !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex !important;
+  justify-content: center;
+}
 
-    margin-top: 1rem !important;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    display: flex !important;
-    justify-content: center;
+@media screen and (max-width: 1480px) {
+   
+    .bank_reserve_page {
+      padding-left: 411px;
+      padding-right: 411px;
+    }
+  
 }

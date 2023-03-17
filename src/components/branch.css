@@ -32,6 +32,7 @@ body {
 
 .ui.table{
     background-color:  #443C68;
+    border-radius: 30px !important;
 }
 
 /* .accordian_title_branch{
@@ -63,17 +64,24 @@ body {
     text-align: center;
 } */
 
+.ui.form .field{
+    width: 340px !important;
+}
 .ui.message{
     display: flex !important;
     text-align: center !important;
-    margin-top: 400px !important;
+    margin-top: 200px !important;
     /* margin-right: 600px !important; */
-    margin-left: 500px !important;
-    height: 100%;
-    width: 50% !important;
+    margin-left: 650px !important;
+    height: 200% !important;
+    width: 30% !important;
     
 
 }
+
+.ui.green.button.approve_btn_branch, .ui.green.buttons .button{
+    margin-left: 80px;
+  } 
 
 .ui.icon.message>.icon:not(.close){
     color: black;
@@ -84,4 +92,22 @@ body {
 
 .ui.form .field>label{
     color: gainsboro !important;
+}
+
+.ui.icon.message{
+    height: 150px !important;
+    font-size: x-large;
+    background-color: gainsboro;
+    border-radius: 30px;
+    position: relative;
+}
+
+@media screen and (max-width: 1480px){
+    .main_page_branch_bg{
+        padding-left: 400px;
+        padding-right: 400px;
+    }
+
+
+
 }
