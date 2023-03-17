@@ -4,17 +4,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Button, Form } from "semantic-ui-react";
-import {
-  Header,
-  Icon,
-  Image,
-  Segment,
-  Divider,
-  Table,
-  Breadcrumb,
-  Menu,
-  Message,
-} from "semantic-ui-react";
+import { Header, Icon, Divider, Table, Menu, Message } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -245,12 +235,12 @@ function Banks() {
                 Client
               </Menu.Item>
             </Menu>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
             <div>
               <Header as="h2" icon textAlign="center">
                 {/* <Icon className="icon_banks" name="building outline" circular /> */}
@@ -310,7 +300,11 @@ function Banks() {
                       console.log(data[index]);
                       return (
                         <Table.Row key={index}>
-                          <Table.Cell>{data.branch.slice(0,6)+"..."+data.branch.slice(36,42)}</Table.Cell>
+                          <Table.Cell>
+                            {data.branch.slice(0, 6) +
+                              "..." +
+                              data.branch.slice(36, 42)}
+                          </Table.Cell>
                           <Table.Cell>
                             {data.amount / 10e7} {data.tokenSymbol}
                           </Table.Cell>
@@ -335,13 +329,13 @@ function Banks() {
         </>
       ) : (
         <div className="acc_msg_box">
-        <Message icon>
-          <Icon name="circle notched" loading />
-          <Message.Content>
-            <Message.Header>Wrong Account!!!</Message.Header>
-            Please Change Your Account
-          </Message.Content>
-        </Message>
+          <Message icon>
+            <Icon name="circle notched" loading />
+            <Message.Content>
+              <Message.Header>Wrong Account!!!</Message.Header>
+              Please Change Your Account
+            </Message.Content>
+          </Message>
         </div>
       )}
     </>
