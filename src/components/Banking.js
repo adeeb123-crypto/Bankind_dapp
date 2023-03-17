@@ -1076,14 +1076,14 @@ function Banking() {
                 render: () => (
                   <Tab.Pane attached={false}>
                     {" "}
-                    <div>
+                    <div >
                       <Header as="h2" icon textAlign="center">
                         <Icon
                           className="header_content_forex"
                           name="handshake outline"
                           circular
                         />
-                        <Header.Content className="header_content_forex">
+                        <Header.Content  >
                           Lending{" "}
                         </Header.Content>
                       </Header>
@@ -1439,7 +1439,7 @@ function Banking() {
         <Message icon>
           <Icon name="circle notched" loading />
           <Message.Content>
-            <Message.Header>Wrong Account!!!</Message.Header>
+            <Message.Header>Warning!!!</Message.Header>
             Please Change Your Account
           </Message.Content>
         </Message>

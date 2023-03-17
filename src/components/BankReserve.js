@@ -148,7 +148,7 @@ function BankReserve() {
           {/* <Icon className="icon_bankreserve" name="money" circular /> */}
           <Header.Content className="header_content_bankreserve">
             {" "}
-            Token Reserve
+            ADD BANK
           </Header.Content>
         </Header>
       </div>

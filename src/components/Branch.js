@@ -1167,6 +1167,10 @@ function Branch() {
       <Breadcrumb.Divider />
       <Breadcrumb.Section active>Branches</Breadcrumb.Section>
     </Breadcrumb> */}
+      <Divider horizontal/>
+      <Divider horizontal/>
+      <Divider horizontal/>
+      <Divider horizontal/>
 
           <div>
             <Header as="h2" icon textAlign="center">
@@ -1177,7 +1181,7 @@ function Branch() {
               />
               <Header.Content className="header_content_branch">
                 {" "}
-                Branch
+                ADD CLIENT 
               </Header.Content>
             </Header>
             {/* <Image
@@ -1628,7 +1632,7 @@ function Branch() {
         <Message icon>
         <Icon name='circle notched' loading />
         <Message.Content>
-          <Message.Header>Wrong Account!!!</Message.Header>
+          <Message.Header>Warning!!!</Message.Header>
           Please Change Your Account
         </Message.Content>
       </Message>

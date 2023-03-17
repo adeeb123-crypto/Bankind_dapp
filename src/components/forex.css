@@ -21,3 +21,36 @@
   .banking_page_bg{
     overflow: hidden;
   }
+
+  .paginationBttns {
+    width: 100%;
+    height: 55px;
+    list-style: none;
+    display: flex;
+    justify-content: right;
+  }
+
+  .paginationBttns a {
+    padding: 10px;
+    margin: 8px;
+    border-radius: 5px;
+    border: 1px solid #393053;
+    color: #635985;
+    cursor: pointer;
+  }
+
+  .paginationBttns a:hover {
+    color: gainsboro;
+    background-color: #393053;
+  }
+  
+  .paginationActive a {
+    color: gainsboro;
+    background-color: #393053;
+  }
+
+  .paginationDisabled a {
+    color: black;
+    background-color: black;
+    cursor:not-allowed;
+  }

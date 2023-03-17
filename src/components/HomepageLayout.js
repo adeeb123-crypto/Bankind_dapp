@@ -6,10 +6,12 @@ import PropTypes from "prop-types";
 import React, { Component, useState } from "react";
 import { InView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
+import Typed from "typed.js";
+
 import Banks from "./Banks";
 import "./homepagelayout.css";
-import mobilePaymentImage  from "../assets/mobile-payment.png"
-import bank_img from "../assets/bank_img.jpg"
+import mobilePaymentImage from "../assets/mobile-payment.png";
+import bank_img from "../assets/bank_img.jpg";
 // import "./graphics.css";
 
 import { useNavigate } from "react-router-dom";
@@ -37,7 +39,6 @@ const { MediaContextProvider, Media } = createMedia({
 
 const HomepageHeading = ({ mobile }) => (
   <Container text>
-
     {/* <div className="hhj">46
     <div className="hhj">46</div>
     <div className="hhj">46</div></div>
@@ -66,22 +67,26 @@ const HomepageHeading = ({ mobile }) => (
       </div>
       <div className="shadow"></div>
     </div> */}
-  <div className="h1_circle">
-    
-    <Header
-      as="h1"
-      content="Your-Decentralized Banking System"
-      inverted
-      style={{
-        fontSize: mobile ? "2em" : "4em",
-        fontWeight: "normal",
-        marginBottom: 0,
-        marginTop: mobile ? "1.5em" : "3em",
-      }}
-    />
+    <div className="h1_circle">
+      <Header
+        as="h1"
+        content="Your-Decentralized Banking System"
+        inverted
+        style={{
+          fontSize: mobile ? "2em" : "4em",
+          fontWeight: "normal",
+          marginBottom: 0,
+          marginTop: mobile ? "1.5em" : "3em",
+        }}
+      />
     </div>
     <div>
-    <Image src={"https://global-uploads.webflow.com/6336e79cd8d43cd4d1230849/63db890c7078928309216caf_hero-img-p-800.png"} />
+      <Image
+      style={{color:"red"}}
+        src={
+          "https://global-uploads.webflow.com/6336e79cd8d43cd4d1230849/63db890c7078928309216caf_hero-img-p-800.png"
+        }
+      />
     </div>
     <Header
       as="h2"
@@ -93,7 +98,6 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? "0.5em" : "1.5em",
       }}
     />
-
   </Container>
 );
 
@@ -126,6 +130,7 @@ HomepageHeading.propTypes = {
 class DesktopContainer extends Component {
   constructor(props) {
     super(props);
+    this.el = React.createRef();
     this.state = {
       isConnected: false,
       metaAccount: [],
@@ -170,7 +175,6 @@ class DesktopContainer extends Component {
             style={{ minHeight: 700, padding: "1em 0em" }}
             vertical
           >
-           
             <Menu
               fixed={fixed ? "top" : null}
               inverted={!fixed}
@@ -178,18 +182,53 @@ class DesktopContainer extends Component {
               secondary={!fixed}
               size="large"
             >
-               <Image className="img_home" src={mobilePaymentImage} size='small' />
+              <Image
+                className="img_home"
+                src={"https://cdn-icons-png.flaticon.com/512/533/533544.png?w=740&t=st=1679050120~exp=1679050720~hmac=5b9113a5960ca287967b02a561ecdedd8e9108d1b4489bb11d7fcc8eefaa09db"}
+                size="small"
+              />
               <Container>
-                <Menu.Item as={Link} to="/bankreserve">
+                <Menu.Item
+                  as={Link}
+                  to="/bankreserve"
+                  style={{
+ 
+                    borderRadius: "20px",
+                    with:"2px"
+                  }}
+                >
                   Reserve Bank
                 </Menu.Item>
-                <Menu.Item as={Link} to="/banks">
+                <Menu.Item
+                  as={Link}
+                  to="/banks"
+                  style={{
+                    background:
+                      "linear-gradient(to left, #4040b1 0%, #865dff 100%)",
+                    borderRadius: "20px",
+                  }}
+                >
                   Bank
                 </Menu.Item>
-                <Menu.Item as={Link} to="/branch">
+                <Menu.Item
+                  as={Link}
+                  to="/branch"
+                  style={{
+       
+                    borderRadius: "20px",
+                  }}
+                >
                   Branch
                 </Menu.Item>
-                <Menu.Item as={Link} to="/banking">
+                <Menu.Item
+                  as={Link}
+                  to="/banking"
+                  style={{
+                    background:
+                      "linear-gradient(to left, #4040b1 0%, #865dff 100%)",
+                    borderRadius: "20px",
+                  }}
+                >
                   Banking Services
                 </Menu.Item>
                 <Menu.Item position="right">
@@ -314,45 +353,76 @@ const HomepageLayout = () => (
   <ResponsiveContainer>
     <Segment style={{ padding: "8em 0em" }} vertical>
       <Grid container stackable verticalAlign="middle">
-        {/* <Grid.Row> */}
-        {/* <Grid.Column width={8}>
+        <Grid.Row>
+          <Grid.Column width={8}>
             <Header as="h3" style={{ fontSize: "2em" }}>
-              We Help customers and Investors
+              Join the DeFi revolution...
             </Header>
             <p style={{ fontSize: "1.33em" }}>
-              We can give your company superpowers to do things that they never
-              thought possible. Let us delight your customers and empower your
-              needs... through Blockchain Technology.
+              "Our mission is to provide innovative solutions that empower
+              people to achieve their goals and improve their lives. We believe
+              in the power of technology to create positive change, and we are
+              committed to building products that are user-friendly, reliable,
+              and secure."
             </p>
-            <Header as="h3" style={{ fontSize: "2em" }}>
-              We Make Bananas That Can Dance
+            <Header as="h3" style={{ fontSize: "2em", color: "blueviolet" }}>
+              "Empowering you to take control of your finances with DeFi."
             </Header>
             <p style={{ fontSize: "1.33em" }}>
-              Yes that's right, you thought it was the stuff of dreams, but even
-              bananas can be bioengineered.
+              Revolutionizing banking with customization – build and manage your
+              own banking ecosystem, transact in any currency, and access
+              lending opportunities with ease.
             </p>
-          </Grid.Column> */}
-        {/* <Grid.Column floated="right" width={6}>
+          </Grid.Column>
+          <Grid.Column floated="right" width={6}>
             <Image
+              className="about_img"
               bordered
               rounded
               size="large"
-              src="/images/wireframe/gainsboro-image.png"
+              src="https://global-uploads.webflow.com/63691faa82ea4c4778ce2111/63dbdfe36aa5d7da2b2a47f1_03.%20DeFi%20101%20-%20A%20beginner%E2%80%99s%20guide%20to%20the%20future%20of%20Finance-min-p-1600.png"
             />
           </Grid.Column>
-        </Grid.Row> */}
-        {/* <Grid.Row>
-          <Grid.Column textAlign="center">
-            <Button size="huge">Check Them Out</Button>
+        </Grid.Row>
+        <Divider horizontal />
+        <Divider horizontal />
+        <Grid.Row>
+          <Grid.Column floated="left" width={6}>
+            <Image
+              className="about_img"
+              bordered
+              rounded
+              size="large"
+              src="https://global-uploads.webflow.com/63691faa82ea4c4778ce2111/63dbdfb6e0bf5171eebb3361_04.%20Centralized%20Exchanges%20vs%20Decentralized%20Exchanges-min-p-1600.png"
+            />
           </Grid.Column>
-        </Grid.Row> */}
+          <Grid.Column width={8}>
+            <Header as="h3" style={{ fontSize: "2em" }}>
+              Experience the future of finance with DeFi in rise...
+            </Header>
+            <p style={{ fontSize: "1.33em" }}>
+              "DeFi disrupts finance, offering secure, transparent, and open
+              services for all. Built on blockchain, it empowers financial
+              innovation and inclusion."
+            </p>
+            <Header as="h3" style={{ fontSize: "2em", color: "blueviolet" }}>
+              "Reducing Dependence on Intermediaries: The Power of DeFi
+              Transactions for Customers"
+            </Header>
+            <p style={{ fontSize: "1.33em" }}>
+              DeFi transactions offer customers the advantages of transparency,
+              security, and accessibility, enabling financial inclusion and
+              innovation while reducing the need for intermediaries.
+            </p>
+          </Grid.Column>
+        </Grid.Row>
       </Grid>
     </Segment>
-
+    {/* 
     <Segment style={{ padding: "0em" }} vertical>
       <Grid celled="internally" columns="equal" stackable>
         <Grid.Row textAlign="center">
-          {/* <Grid.Column style={{ paddingBottom: "5em", paddingTop: "5em" }}>
+          <Grid.Column style={{ paddingBottom: "5em", paddingTop: "5em" }}>
             <Header as="h3" style={{ fontSize: "2em" }}>
               "What a Company"
             </Header>
@@ -365,24 +435,27 @@ const HomepageLayout = () => (
               "I shouldn't have gone with their competitor."
             </Header>
             <p style={{ fontSize: "1.33em" }}>
-              <Image avatar src="/images/avatar/large/nan.jpg" />
+              <Image
+                avatar
+                src="https://global-uploads.webflow.com/63691faa82ea4c4778ce2111/63dbdfb6e0bf5171eebb3361_04.%20Centralized%20Exchanges%20vs%20Decentralized%20Exchanges-min-p-1600.png"
+              />
               <b>Nan</b> Chief Fun Officer Acme Toys
             </p>
-          </Grid.Column> */}
+          </Grid.Column>
         </Grid.Row>
       </Grid>
     </Segment>
 
     <Segment style={{ padding: "8em 0em" }} vertical>
-      {/* <Container text>
+      <Container text>
         <Header as="h3" style={{ fontSize: "2em" }}>
           Breaking The Grid, Grabs Your Attention
         </Header>
         <p style={{ fontSize: "1.33em" }}>
           Instead of focusing on content creation and hard work, we have learned
           how to master the art of doing nothing by providing massive amounts of
-          gainsborospace and generic content that can seem massive, monolithic and
-          worth your attention.
+          gainsborospace and generic content that can seem massive, monolithic
+          and worth your attention.
         </p>
         <Button as="a" size="large">
           Read More
@@ -408,8 +481,8 @@ const HomepageLayout = () => (
         <Button as="a" size="large">
           I'm Still Quite Interested
         </Button>
-      </Container> */}
-    </Segment>
+      </Container>
+    </Segment> */}
 
     <Segment inverted vertical style={{ padding: "5em 0em" }}>
       <Container>

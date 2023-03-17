@@ -94,10 +94,16 @@ body {
     color: gainsboro !important;
 }
 
+.ui.icon.header.aligned{
+    margin-left: 10rem;
+    margin-right: 10rem;
+}
+
 .ui.icon.message{
     height: 150px !important;
     font-size: x-large;
-    background-color: gainsboro;
+    color: gainsboro;
+    background: linear-gradient(to left, #4040b1 0%, #865dff 100%);
     border-radius: 30px;
     position: relative;
 }

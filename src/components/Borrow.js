@@ -36,12 +36,14 @@ function Borrow() {
   const [isActive, setIsActive] = useState("");
   const [date, setDate] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
+  const [pushCounter, setPushCounter] = useState(0);
   // const [branchName, setBranchName] = useState("");
 
   const displayDetails = 3;
   const pageVisited = pageNumber * displayDetails;
 
   useEffect(() => {
+      // localStorage.removeItem("Borrow_page");
     let temp_data_borrow = window.localStorage.getItem("Borrow_page");
     if (temp_data_borrow) {
       temp_data_borrow = JSON.parse(temp_data_borrow);
@@ -71,9 +73,7 @@ function Borrow() {
                 Branch
                 <Grid.Column>
                   {" "}
-                  {data.bankId == 1
-                    ? "USD Branch"
-                    : "Europe Branch"}
+                  {data.bankId == 1 ? "USD Branch" : "Europe Branch"}
                 </Grid.Column>
               </Grid.Column>
               <Grid.Column>
@@ -85,7 +85,9 @@ function Borrow() {
               </Grid.Column>
               <Grid.Column>
                 Last Updated
-                <Grid.Column>{new Date(data.timeStamp * 1000).toLocaleString()}</Grid.Column>
+                <Grid.Column>
+                  {new Date(data.timeStamp * 1000).toLocaleString()}
+                </Grid.Column>
               </Grid.Column>
             </Grid.Row>
             <Grid.Row color="gainsboro">
@@ -199,14 +201,22 @@ function Borrow() {
           // tmp_data.pop();
           tmp_data.push(positionDetails1);
           setArrayData(tmp_data);
+          setPushCounter(pushCounter + 1);
+
+          if (pushCounter == 2) {
+            tmp_data.pop();
+            tmp_data.pop();
+            setPushCounter(0);
+          }
+
           window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
           console.log("arrydata", arrayData);
           const unixTimestamp = arrayData[arrayData.length - 1].timeStamp;
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
           console.log("Humandate:", humanDate);
-          const date_temp = date
-          date_temp.push(humanDate)
+          const date_temp = date;
+          date_temp.push(humanDate);
           setDate(date_temp);
         } else {
           setTokenSymbol("USD");
@@ -229,6 +239,14 @@ function Borrow() {
           let tmp_data = arrayData;
           // tmp_data.pop();
           tmp_data.push(positionDetails1);
+          setPushCounter(pushCounter + 1);
+
+          if (pushCounter == 2) {
+            tmp_data.pop();
+            tmp_data.pop();
+            setPushCounter(0);
+          }
+
           setArrayData(tmp_data);
           console.log("arrydata", arrayData);
           window.localStorage.setItem("Borrow_page", JSON.stringify(tmp_data));
@@ -236,8 +254,8 @@ function Borrow() {
           const date = new Date(unixTimestamp * 1000);
           const humanDate = date.toLocaleString();
           console.log("Humandate:", humanDate);
-          const date_temp = date
-          date_temp.push(humanDate)
+          const date_temp = date;
+          date_temp.push(humanDate);
           setDate(date_temp);
         }
       }

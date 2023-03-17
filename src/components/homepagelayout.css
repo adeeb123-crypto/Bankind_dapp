@@ -2,7 +2,10 @@
   background-color: #393053;
 }
 
-.ui.small.image.img_home, .ui.small.images .image, .ui.small.images img, .ui.small.images svg{
+.ui.small.image.img_home,
+.ui.small.images .image,
+.ui.small.images img,
+.ui.small.images svg {
   height: 40px;
   width: 60px;
   padding-left: 20px;
@@ -10,27 +13,47 @@
 }
 
 .ui.blue.button {
-  background: linear-gradient(to left,#4040b1  0%, #865DFF 100%);
+  background: linear-gradient(to left, #4040b1 0%, #865dff 100%);
   opacity: 5;
-  
-
 }
 
-.ui.header:first-child{
-  background: linear-gradient(to left,#4040b1  0%, #865DFF 100%);
+.ui.header:first-child {
+  background: linear-gradient(to left, #4040b1 0%, #865dff 100%);
   color: gainsboro;
-font-family:monospace ;
+  font-family: monospace;
   border-radius: 70px;
   box-shadow: 0 0 10px 5px rgba(26, 22, 28, 2);
 }
 
-element.style{
+element.style {
   margin-top: 2rem;
+  margin-top: 2rem;
+  
 }
 
+img.ui.image {
+}
+
+.ui.rounded.image,
+.ui.rounded.image > *,
+.ui.rounded.images .image,
+.ui.rounded.images .image > * {
+  border-radius: 198.3125em;
+  background-color: blueviolet;
+    
+}
+
+/* 
 .img_fuel_home{
 
-  padding-top: 5px ;
+  padding-top: 10px ;
   border-radius: 20px;
   display: flex;
-}
+} */
+
+/* a.item.bankreserve_link{
+  background: linear-gradient(to left, #4040b1 0%, #865dff 100%);
+   ;
+} */
+
+

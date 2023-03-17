@@ -256,7 +256,7 @@ function Banks() {
                 {/* <Icon className="icon_banks" name="building outline" circular /> */}
                 <Header.Content className="header_content_bank">
                   {" "}
-                  BANK
+                  ADD BRANCH
                 </Header.Content>
               </Header>
             </div>
@@ -338,7 +338,7 @@ function Banks() {
         <Message icon>
           <Icon name="circle notched" loading />
           <Message.Content>
-            <Message.Header>Wrong Account!!!</Message.Header>
+            <Message.Header>Warning!!!</Message.Header>
             Please Change Your Account
           </Message.Content>
         </Message>

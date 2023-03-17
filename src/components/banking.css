@@ -213,6 +213,9 @@ form {
   margin-left: 200px !important;
 
 }
+.ui.green.button.exit_btn_loan, .ui.green.buttons .button {
+  margin-left: -34px;
+}
 
 /* can change this according to laptop  */
 @media screen and (max-width: 1480px){
@@ -233,9 +236,10 @@ form {
   .ui.icon.message{
     height: 150px !important;
     font-size: large;
-    background-color: gainsboro;
     border-radius: 30px;
     position: relative;
+    color: gainsboro;
+    background: linear-gradient(to left, #4040b1 0%, #865dff 100%);
 }
 
 }
