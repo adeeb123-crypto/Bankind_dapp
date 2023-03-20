@@ -7,19 +7,17 @@ import {
   Button,
   Form,
   Header,
-  
   Icon,
   Image,
   Divider,
   Card,
-  
   Table,
   Grid,
   List,
   Container,
   Tab,
   Menu,
-  Message
+  Message,
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -48,10 +46,12 @@ function Banking() {
   const [bankName, setBankName] = useState("");
   const [checkClient, setCheckClient] = useState("");
   const [isCorrAcc, setIsCorrAcc] = useState(false);
+  const [isIsDone, setIsIsDone] = useState(false);
   const [clientAmt, setClientAmt] = useState("");
 
   useEffect(() => {
     // someForexDets()
+    newforexdets();
     checkDetails();
 
     let temp_dataF = window.localStorage.getItem("DataF");
@@ -89,7 +89,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         // console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -131,7 +134,7 @@ function Banking() {
           .clients(IDByAddress.bankId, IDByAddress.branchId)
           .call();
 
-          setClientAmt(branchAddress.amount)
+        setClientAmt(branchAddress.amount);
 
         if (branchAddress.client === formattedMetamaskAddress) {
           setIsCorrAcc(true);
@@ -167,7 +170,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -219,7 +225,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -301,13 +310,112 @@ function Banking() {
     }
   }
 
+  async function newforexdets() {
+    try {
+      if (
+        typeof window !== "undefined" &&
+        typeof window.ethereum !== "undefined"
+      ) {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
+        // console.log("accounts", accounts);
+        const provider = await new ethers.providers.Web3Provider(
+          window.ethereum
+        );
+        const signer = await provider.getSigner();
+        // console.log("Signer", signer);
+        const address = await signer.getAddress();
+        console.log(address);
+      } else {
+        console.log("MemtaMask Not Installed Maen");
+      }
+      const web3eth = new Web3(Web3.givenProvider);
+
+      const callContract = new web3eth.eth.Contract(
+        ABIbnksys,
+        contractAddressbnksys
+      );
+      const callContractECB = new web3eth.eth.Contract(
+        ABIEcb,
+        contractAddressEcb
+      );
+      const callContractFED = new web3eth.eth.Contract(
+        ABIFed,
+        contractAddressFed
+      );
+      if (web3eth.givenProvider) {
+        // console.log("Hello Provider Here", web3eth.givenProvider);
+        let address = web3eth.givenProvider.selectedAddress;
+        // console.log("address", address);
+
+        let IDByAddress = await callContract.methods
+          .idOfAddress(address)
+          .call();
+
+        if (IDByAddress.bankId == 0) {
+          setTokenSymbol("EUR");
+
+          let numOfRequest = await callContract.methods
+            .numOfRequest(address)
+            .call();
+
+          let ReqDetailsClient1 = await callContract.methods
+            .requestDetails(address, numOfRequest - 1)
+            .call();
+
+            console.log("ReqDetailsClient1.isDone",ReqDetailsClient1.isDone);  
+          // console.log("ReqDetailsClient1.isDone",ReqDetailsClient1.isDone);  
+
+          const temp_var = "";
+          setIsIsDone(temp_var);
+          setIsIsDone(ReqDetailsClient1.isDone);
+        } else {
+          setTokenSymbol("USD");
+
+          let responseFed = await callContractFED.methods
+            .approve(contractAddressbnksys, amount * 10e8)
+            .send({ from: address, gas: 1000000 });
+          // console.log("Response :", responseFed);
+
+          let IDByAddress = await callContract.methods
+            .idOfAddress(address)
+            .call();
+
+          let IDByAddress2 = await callContract.methods
+            .idOfAddress(clientaddress)
+            .call();
+
+          let numOfRequest = await callContract.methods
+            .numOfRequest(address)
+            .call();
+
+          let ReqDetailsClient1 = await callContract.methods
+            .requestDetails(address, numOfRequest - 1)
+            .call();
+
+          const temp_var = "";
+          setIsIsDone(temp_var);
+          setIsIsDone(ReqDetailsClient1.isDone);
+          // console.log("ReqDetailsClient1.isDone",ReqDetailsClient1.isDone);  
+        }
+      }
+    } catch (error) {
+      console.log(Error);
+    }
+  }
+
   async function forex() {
     try {
       if (
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -462,7 +570,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -596,7 +707,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -769,7 +883,10 @@ function Banking() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -904,7 +1021,12 @@ function Banking() {
             {isconnected ? (
               <></>
             ) : (
-              <Button className="banking_pg_btn" primary type="submit"  onClick={giveDetails}>
+              <Button
+                className="banking_pg_btn"
+                primary
+                type="submit"
+                onClick={giveDetails}
+              >
                 Connect
               </Button>
             )}
@@ -926,7 +1048,7 @@ function Banking() {
                 <Card.Content extra>
                   <a>
                     <Icon name="money bill alternate outline" />
-                   {clientAmt /10e7}
+                    {clientAmt / 10e7}
                   </a>
                 </Card.Content>
               </Card>
@@ -971,7 +1093,7 @@ function Banking() {
                       </Form.Group>
 
                       {/* {centralbankid ? <Button type="submit" onClick={addbank()}>Submit</Button> :<div>Ereor</div> } */}
-                      <Button primary type="submit"  onClick={forex}>
+                      <Button primary type="submit" onClick={forex}>
                         Submit
                       </Button>
                     </Form>
@@ -1000,10 +1122,13 @@ function Banking() {
                         <Table.Body>
                           {arrayDataF.length > 0 &&
                             arrayDataF.map((data, index) => {
-                              console.log(data[index]);
                               return (
                                 <Table.Row key={index}>
-                                  <Table.Cell>{data.toClient}</Table.Cell>
+                                  <Table.Cell>
+                                    {data.toClient.slice(0, 6) +
+                                      "..." +
+                                      data.toClient.slice(36, 42)}
+                                  </Table.Cell>
                                   <Table.Cell>
                                     {data.amountInUsd / 10e7} USD
                                   </Table.Cell>
@@ -1027,7 +1152,7 @@ function Banking() {
                                     )}
                                   </Table.Cell>
                                   <Table.Cell>
-                                    {data.isDone ? (
+                                    {isIsDone ? (
                                       <Icon
                                         color="green"
                                         name="checkmark"
@@ -1076,16 +1201,14 @@ function Banking() {
                 render: () => (
                   <Tab.Pane attached={false}>
                     {" "}
-                    <div >
+                    <div>
                       <Header as="h2" icon textAlign="center">
                         <Icon
                           className="header_content_forex"
                           name="handshake outline"
                           circular
                         />
-                        <Header.Content  >
-                          Lending{" "}
-                        </Header.Content>
+                        <Header.Content>Lending </Header.Content>
                       </Header>
                     </div>
                     <Form unstackable>
@@ -1161,7 +1284,7 @@ function Banking() {
                                     />
                                   ) : (
                                     <Button
-                                    className="exit_btn_loan"
+                                      className="exit_btn_loan"
                                       basic
                                       color="green"
                                       onClick={clearLoan}
@@ -1439,7 +1562,7 @@ function Banking() {
         <Message icon>
           <Icon name="circle notched" loading />
           <Message.Content>
-            <Message.Header>Warning!!!</Message.Header>
+            <Message.Header>Access Denied!!!</Message.Header>
             Please Change Your Account
           </Message.Content>
         </Message>

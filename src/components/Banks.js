@@ -34,6 +34,7 @@ function Banks() {
   const [bankAdded, setBankAdded] = useState(false);
   const [arrayData, setArrayData] = useState([]);
   const [isCorrAcc, setIsCorrAcc] = useState(false);
+  const [counterBank, setCounterBank] = useState(0);
 
   useEffect(() => {
     checkDetails();
@@ -57,7 +58,12 @@ function Banks() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -88,7 +94,7 @@ function Banks() {
         let address = web3eth.givenProvider.selectedAddress;
         console.log("address", address);
 
-        if (bankid == "Europe Bank") {
+        if (bankid=="Europe Bank") {
           setTokenSymbol("EUR");
           let responseEcb = await callContractECB.methods
             .approve(contractAddressbnksys, amount * 100000000)
@@ -152,12 +158,21 @@ function Banks() {
 
   async function checkDetails() {
     try {
+      setCounterBank(counterBank + 1);
+      if (counterBank == 1) {
+        setCounterBank(0);
+      } else {
+        setCounterBank(1);
+      }
       if (
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
-        // console.log("accounts", accounts);
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
+        console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
         );
@@ -195,10 +210,17 @@ function Banks() {
           .call();
 
         let branchAddress = await callContract.methods
-          .branches(IDByAddress.bankId, IDByAddress.branchId)
+          .banks(counterBank)
           .call();
 
+        console.log(
+          "branchAddress.bank === formattedMetamaskAddress",
+          branchAddress.bank,
+          formattedMetamaskAddress
+        );
+
         if (branchAddress.bank === formattedMetamaskAddress) {
+          console.log("Entered");
           setIsCorrAcc(true);
           if (IDByAddress.bankId == 0) {
             let IDByAddress = await callContract.methods
@@ -219,6 +241,7 @@ function Banks() {
           }
         } else {
           setIsCorrAcc(false);
+          console.log("Not entering");
         }
       }
     } catch (error) {
@@ -245,12 +268,12 @@ function Banks() {
                 Client
               </Menu.Item>
             </Menu>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
-            <Divider horizontal/>
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
+            <Divider horizontal />
             <div>
               <Header as="h2" icon textAlign="center">
                 {/* <Icon className="icon_banks" name="building outline" circular /> */}
@@ -310,7 +333,11 @@ function Banks() {
                       console.log(data[index]);
                       return (
                         <Table.Row key={index}>
-                          <Table.Cell>{data.branch.slice(0,6)+"..."+data.branch.slice(36,42)}</Table.Cell>
+                          <Table.Cell>
+                            {data.branch.slice(0, 6) +
+                              "..." +
+                              data.branch.slice(36, 42)}
+                          </Table.Cell>
                           <Table.Cell>
                             {data.amount / 10e7} {data.tokenSymbol}
                           </Table.Cell>
@@ -335,13 +362,13 @@ function Banks() {
         </>
       ) : (
         <div className="acc_msg_box">
-        <Message icon>
-          <Icon name="circle notched" loading />
-          <Message.Content>
-            <Message.Header>Warning!!!</Message.Header>
-            Please Change Your Account
-          </Message.Content>
-        </Message>
+          <Message icon>
+            <Icon name="circle notched" loading />
+            <Message.Content>
+              <Message.Header>Access Denied!!!</Message.Header>
+              Please Change Your Account
+            </Message.Content>
+          </Message>
         </div>
       )}
     </>

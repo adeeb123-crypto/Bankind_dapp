@@ -1,6 +1,6 @@
 //Need to make data consistent as on reaload the table dissapears
 import React, { useEffect } from "react";
-import { Button, Divider, Form, Header, Icon, Image,Menu } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Icon, Image,Menu } from "semantic-ui-react";
 import { useState, use } from "react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -40,7 +40,8 @@ function BankReserve() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -126,6 +127,8 @@ function BankReserve() {
   }
 
   return (
+ 
+    
     <div className="bank_reserve_page">
       
       <Menu  pagination>
@@ -151,6 +154,7 @@ function BankReserve() {
             ADD BANK
           </Header.Content>
         </Header>
+      
       </div>
 
       <Form unstackable>
@@ -223,6 +227,7 @@ function BankReserve() {
         </Table>
       </div>
     </div>
+   
   );
 }
 export default BankReserve;

@@ -14,8 +14,8 @@ import {
   Grid,
   Menu,
   Modal,
-  Advertisement, 
-  Message
+  Advertisement,
+  Message,
 } from "semantic-ui-react";
 import { contractAddressFed, ABIFed } from "../constants";
 import { contractAddressEcb, ABIEcb } from "../constants";
@@ -121,7 +121,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         // console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -191,14 +194,16 @@ function Branch() {
     }
   }
 
-  
   async function addClient() {
     try {
       if (
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -243,7 +248,7 @@ function Branch() {
             .send({ from: address, gas: 1000000 });
           console.log("Response :", responseEcb);
 
-          if (IDByAddress.bankId == 0 && branchid =="Europe Branch") {
+          if (IDByAddress.bankId == 0 && branchid == "Europe Branch") {
             let response = await callContract.methods
               .addClient(
                 IDByAddress.bankId,
@@ -283,7 +288,7 @@ function Branch() {
             .approve(contractAddressbnksys, amount * 100000000)
             .send({ from: address, gas: 1000000 });
 
-          if (IDByAddress.bankId == 1 && branchid =="USD Branch") {
+          if (IDByAddress.bankId == 1 && branchid == "USD Branch") {
             let response = await callContract.methods
               .addClient(
                 IDByAddress.bankId,
@@ -331,7 +336,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -467,7 +475,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         // console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -509,7 +520,6 @@ function Branch() {
           .branches(IDByAddress.bankId, IDByAddress.branchId)
           .call();
 
-    
         if (branchAddress.branch === formattedMetamaskAddress) {
           setIsCorrAcc(true);
           if (IDByAddress.bankId == 0) {
@@ -554,7 +564,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -635,7 +648,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -796,7 +812,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -902,7 +921,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -1049,7 +1071,10 @@ function Branch() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -1167,10 +1192,10 @@ function Branch() {
       <Breadcrumb.Divider />
       <Breadcrumb.Section active>Branches</Breadcrumb.Section>
     </Breadcrumb> */}
-      <Divider horizontal/>
-      <Divider horizontal/>
-      <Divider horizontal/>
-      <Divider horizontal/>
+          <Divider horizontal />
+          <Divider horizontal />
+          <Divider horizontal />
+          <Divider horizontal />
 
           <div>
             <Header as="h2" icon textAlign="center">
@@ -1181,7 +1206,7 @@ function Branch() {
               />
               <Header.Content className="header_content_branch">
                 {" "}
-                ADD CLIENT 
+                ADD CLIENT
               </Header.Content>
             </Header>
             {/* <Image
@@ -1264,7 +1289,11 @@ function Branch() {
                   arrayData.map((data, index) => {
                     return (
                       <Table.Row key={index}>
-                        <Table.Cell>{data.client.slice(0,4)+"..."+data.client.slice(38,42)}</Table.Cell>
+                        <Table.Cell>
+                          {data.client.slice(0, 4) +
+                            "..." +
+                            data.client.slice(38, 42)}
+                        </Table.Cell>
                         <Table.Cell>
                           {data.amount / 10e7} {data.tokenSymbol}
                         </Table.Cell>
@@ -1276,7 +1305,10 @@ function Branch() {
                             ? "Europe Client"
                             : "USD Client"}
                         </Table.Cell>
-                        <Table.Cell>True</Table.Cell>
+                        <Table.Cell>
+                          {" "}
+                          <Icon color="green" name="checkmark" size="large" />
+                        </Table.Cell>
                       </Table.Row>
                     );
                   })}
@@ -1310,7 +1342,11 @@ function Branch() {
                       Pending Forex Requests
                     </Header.Content>
                   </Header>
-                  <Button className="view_req_branch_btn" primary onClick={checkForexRequest}>
+                  <Button
+                    className="view_req_branch_btn"
+                    primary
+                    onClick={checkForexRequest}
+                  >
                     View Requests
                   </Button>
                   <Button color="grey" onClick={() => navigate("/forex")}>
@@ -1341,22 +1377,40 @@ function Branch() {
                                 <Card.Meta>
                                   Amount {data.amountInEur / 10e7} EUR
                                 </Card.Meta>
-                                <Card.Meta>To Bank {data.toBankId}</Card.Meta>
                                 <Card.Meta>
-                                  To Branch {data.toBranchId}
+                                  To Bank{" "}
+                                  {data.toBankId == 0
+                                    ? "Europe Bank"
+                                    : "USD Bank"}
+                                </Card.Meta>
+                                <Card.Meta>
+                                  To Branch{" "}
+                                  {data.toBankId == 0
+                                    ? "Europe Branch"
+                                    : "USD Branch"}
                                 </Card.Meta>
                                 <Card.Description>
                                   EUR/USD=
                                   {data.amountInUsd / data.amountInEur}
                                 </Card.Description>
-                                <Button
-                                className="approve_btn_branch"
-                                  basic
-                                  color="green"
-                                  onClick={processForexRequestBranch}
-                                >
-                                  Approve
-                                </Button>
+                                {data.isDone ? (
+                                  <Button
+                                    className="approve_btn_branch"
+                                    color="green"
+                                   
+                                  >
+                                    Approved
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    className="approve_btn_branch"
+                                    basic
+                                    color="green"
+                                    onClick={processForexRequestBranch}
+                                  >
+                                    Approve
+                                  </Button>
+                                )}
                               </Card.Content>
                             </Card>
                           );
@@ -1478,7 +1532,11 @@ function Branch() {
                       Pending Borrow Requests
                     </Header.Content>
                   </Header>
-                  <Button className="view_req_branch_btn" primary onClick={checkBorrowRequest}>
+                  <Button
+                    className="view_req_branch_btn"
+                    primary
+                    onClick={checkBorrowRequest}
+                  >
                     View Requests
                   </Button>
                   <Button color="grey" onClick={() => navigate("/borrow")}>
@@ -1497,7 +1555,8 @@ function Branch() {
                                 Borrow Request: {data.positionId}{" "}
                               </Card.Header>
                               <Card.Meta>
-                                Amount {data.amountBorrowed / 10e7} {data.bankId == 0 ? 'EUR' : 'USD'}
+                                Amount {data.amountBorrowed / 10e7}{" "}
+                                {data.bankId == 0 ? "EUR" : "USD"}
                               </Card.Meta>
                               <Card.Meta>
                                 Status{" "}
@@ -1515,10 +1574,15 @@ function Branch() {
                                 Interest Rate {10} %
                               </Card.Description>
                               {data.isDone ? (
-                                <Button className="approve_btn_branch" color="green">Approved</Button>
+                                <Button
+                                  className="approve_btn_branch"
+                                  color="green"
+                                >
+                                  Approved
+                                </Button>
                               ) : (
                                 <Button
-                                className="approve_btn_branch"
+                                  className="approve_btn_branch"
                                   basic
                                   color="green"
                                   onClick={processLoan}
@@ -1630,12 +1694,12 @@ function Branch() {
         </div>
       ) : (
         <Message icon>
-        <Icon name='circle notched' loading />
-        <Message.Content>
-          <Message.Header>Warning!!!</Message.Header>
-          Please Change Your Account
-        </Message.Content>
-      </Message>
+          <Icon name="circle notched" loading />
+          <Message.Content>
+            <Message.Header>Access Denied!!!</Message.Header>
+            Please Change Your Account
+          </Message.Content>
+        </Message>
       )}
     </>
   );

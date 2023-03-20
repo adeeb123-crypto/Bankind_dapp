@@ -126,7 +126,10 @@ function Forex() {
         typeof window !== "undefined" &&
         typeof window.ethereum !== "undefined"
       ) {
-        const accounts = await window.ethereum.enable();
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
         console.log("accounts", accounts);
         const provider = await new ethers.providers.Web3Provider(
           window.ethereum
@@ -183,11 +186,9 @@ function Forex() {
             .requestDetails(forexDetails.byClient, forexDetails.reqId)
             .call();
 
-          console.log("ReqDetailsClient1", ReqDetailsClient1);
-
           let tmp_data = arrayData;
-
           tmp_data.push(ReqDetailsClient1);
+          setArrayData(tmp_data);
           setPushCounter(pushCounter + 1);
 
           if (pushCounter == 2) {
@@ -195,8 +196,7 @@ function Forex() {
             tmp_data.pop();
             setPushCounter(0);
           }
-          setArrayData(tmp_data);
-          console.log("arrayData1", arrayData);
+
           window.localStorage.setItem("Forex_page", JSON.stringify(tmp_data));
         } else {
           setTokenSymbol("USD");
@@ -224,15 +224,15 @@ function Forex() {
           console.log("ReqDetailsClient1", ReqDetailsClient1);
 
           let tmp_data = arrayData;
-
+          // tmp_data.pop();
           tmp_data.push(ReqDetailsClient1);
           setPushCounter(pushCounter + 1);
 
           if (pushCounter == 2) {
             tmp_data.pop();
+            tmp_data.pop();
             setPushCounter(0);
           }
-          setArrayData(tmp_data);
           window.localStorage.setItem("Forex_page", JSON.stringify(tmp_data));
         }
       }
